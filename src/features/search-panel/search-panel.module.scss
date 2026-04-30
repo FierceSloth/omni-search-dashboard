@@ -1,0 +1,58 @@
+.header {
+  padding: 80px 0 60px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  text-transform: uppercase;
+}
+
+.panelForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.resultsCount {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--text-tertiary);
+  font-size: 1rem;
+}
+
+.gameList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  justify-items: center;
+  gap: 32px;
+}

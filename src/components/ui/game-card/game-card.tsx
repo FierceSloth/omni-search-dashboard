@@ -25,8 +25,10 @@ export class GameCard extends Component<IProps> {
     }
 
     return (
-      <div className={styles.gameCard}>
-        <img className={styles.image} src={imageUrl} alt={title} />
+      <div className={styles.gameCard} title={title}>
+        <div className={styles.imageWrapper}>
+          <img className={styles.image} src={imageUrl} alt={title} />
+        </div>
 
         <div className={styles.content}>
           <div className={styles.meta}>

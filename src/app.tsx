@@ -1,3 +1,4 @@
+import { SearchPanel } from '@/features/search-panel';
 import { Component, type ReactNode } from 'react';
 
 export class App extends Component {
@@ -7,7 +8,7 @@ export class App extends Component {
         <div className="ambient-light"></div>
 
         <div className="container">
-          <h1>Omni Search Dashboard</h1>
+          <SearchPanel></SearchPanel>
         </div>
       </>
     );
