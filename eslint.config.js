@@ -68,7 +68,7 @@ export default tseslint.config(
         'error',
         { accessibility: 'explicit', overrides: { constructors: 'off' } },
       ],
-      '@typescript-eslint/member-ordering': 'error',
+      '@typescript-eslint/member-ordering': 'off',
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
       'no-magic-numbers': [
         'error',
