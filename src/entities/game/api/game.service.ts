@@ -1,28 +1,13 @@
-import { searchMapper } from '@/entities/game/lib/search-mapper';
-import type { IGameCardDTO, IGameCardEntity } from '@/entities/game/model/types';
+import { gameMapper } from '@/entities/game/lib/game-mapper';
+import type { IGamesResponse } from '@/entities/game/model/responses';
+import type { IGameCardEntity } from '@/entities/game/model/types';
+import { RawgClient } from '@/shared/api/rawg-client';
 
-interface IGamesResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: IGameCardDTO[];
-}
-
-export class RawgApiService {
-  private static readonly API_KEY = 'ee4cd6c77f4848da9975f75afa6d2a1d';
-  private static readonly BASE_URL = 'https://api.rawg.io/api';
-
+export class GameService {
   public static async searchGames(query: string): Promise<IGameCardEntity[]> {
-    const url = `${RawgApiService.BASE_URL}/games?key=${RawgApiService.API_KEY}&search=${query}`;
+    const endpoint = query.trim() ? `/games?search=${encodeURIComponent(query)}` : `/games`;
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error('HTTP error! status: ${response.status}');
-    }
-
-    const data = (await response.json()) as IGamesResponse;
-
-    return data?.results.map((dto) => searchMapper.mapGameCard(dto));
+    const data = await RawgClient.fetchData<IGamesResponse>(endpoint);
+    return data.results?.map((card) => gameMapper.mapGameCard(card));
   }
 }

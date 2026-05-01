@@ -1,1 +1,1 @@
-export { SearchInput as SeacrhInput } from './search-input';
+export { SearchInput } from './search-input';

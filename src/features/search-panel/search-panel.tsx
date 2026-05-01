@@ -1,10 +1,10 @@
 import React, { Component, type ReactNode } from 'react';
 
-import { RawgApiService } from '@/entities/game/api/game.service';
-import type { IGameCardEntity } from '../../entities/game/model/types';
+import type { IGameCardEntity } from '@entities/game';
+import { GameService } from '@entities/game';
 
-import { GameCard } from '@shared/ui/game-card';
-import { SearchInput } from '@shared/ui/search-input/search-input';
+import { GameCard } from '@entities/game/';
+import { SearchInput } from '@shared/ui/search-input';
 
 import styles from './search-panel.module.scss';
 
@@ -31,7 +31,7 @@ export class SearchPanel extends Component<Record<string, never>, IState> {
     this.setState({ isLoading: true, error: null });
 
     try {
-      const games = await RawgApiService.searchGames(query);
+      const games = await GameService.searchGames(query);
       this.setState({ games });
     } catch (error) {
       this.setState({ error: error instanceof Error ? error.message : 'Something went wrong' });

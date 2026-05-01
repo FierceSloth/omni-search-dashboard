@@ -1,6 +1,6 @@
 import { Component, type InputHTMLAttributes, type ReactNode } from 'react';
 
-import searchIcon from '@assets/svg/search-icon.svg?raw';
+import searchIcon from '@shared/assets/svg/search-icon.svg?raw';
 import styles from './search-input.module.scss';
 
 export class SearchInput extends Component<InputHTMLAttributes<HTMLInputElement>> {

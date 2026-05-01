@@ -1,6 +1,6 @@
 import type { IGameCardDTO, IGameCardEntity } from '../model/types';
 
-export const searchMapper = {
+export const gameMapper = {
   mapGameCard(dto: IGameCardDTO): IGameCardEntity {
     return {
       id: dto.id,
@@ -8,7 +8,7 @@ export const searchMapper = {
       rating: dto.rating,
       released: dto.released,
       imageUrl: dto.background_image,
-      genre: searchMapper.mapGenre(dto.genres),
+      genre: gameMapper.mapGenre(dto.genres),
     };
   },
 
