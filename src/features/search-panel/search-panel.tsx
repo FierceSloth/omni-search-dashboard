@@ -3,8 +3,8 @@ import React, { Component, type ReactNode } from 'react';
 import { RawgApiService } from '@/service/rawg-api.service';
 import type { IGameCardEntity } from './common/types/types';
 
-import { GameCard } from '@/components/ui/game-card';
-import { SearchInput } from '@/components/ui/search-input/search-input';
+import { GameCard } from '@shared/ui/game-card';
+import { SearchInput } from '@shared/ui/search-input/search-input';
 
 import styles from './search-panel.module.scss';
 
