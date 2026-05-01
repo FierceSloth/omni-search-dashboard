@@ -1,6 +1,8 @@
-import { Component, type ReactNode } from 'react';
+import { Component, type ReactNode, type SyntheticEvent } from 'react';
 
 import styles from './game-card.module.scss';
+
+const FALLBACK_IMAGE = 'https://placehold.co/600x400/1a1a1a/aaaaaa?text=No+Image';
 
 interface IProps {
   title: string;
@@ -11,6 +13,12 @@ interface IProps {
 }
 
 export class GameCard extends Component<IProps> {
+  private handleImageError = (event: SyntheticEvent<HTMLImageElement>): void => {
+    if (event.currentTarget.src !== FALLBACK_IMAGE) {
+      event.currentTarget.src = FALLBACK_IMAGE;
+    }
+  };
+
   public render(): ReactNode {
     const { title, released, genre, imageUrl, rating } = this.props;
 
@@ -27,7 +35,7 @@ export class GameCard extends Component<IProps> {
     return (
       <div className={styles.gameCard} title={title}>
         <div className={styles.imageWrapper}>
-          <img className={styles.image} src={imageUrl} alt={title} />
+          <img className={styles.image} src={imageUrl} alt={title} onError={this.handleImageError} />
         </div>
 
         <div className={styles.content}>
@@ -35,7 +43,7 @@ export class GameCard extends Component<IProps> {
             <div className={styles.genre}>{genre}</div>
             {rating && <div className={styles.rating}>{rating} ★</div>}
           </div>
-          <h3 className={styles.title}>{title}</h3>
+          <div className={styles.title}>{title}</div>
 
           <p className={styles.date}>{date}</p>
         </div>
