@@ -12,6 +12,8 @@ interface IState {
   error: string | null;
 }
 
+const debounceTimeout = 500;
+
 export class GamesDiscoveryWidget extends Component<Record<string, never>, IState> {
   public state: IState = {
     searchQuery: '',
@@ -19,9 +21,30 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
     isLoading: false,
     error: null,
   };
+  private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   public componentDidMount(): void {
     void this.fetchGames(' ');
+  }
+
+  public componentDidUpdate(_previousProps: Record<string, never>, previousState: IState): void {
+    if (this.state.searchQuery === previousState.searchQuery) {
+      return;
+    }
+
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      void this.fetchGames(this.state.searchQuery);
+    }, debounceTimeout);
+  }
+
+  public componentWillUnmount(): void {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
   }
 
   private fetchGames = async (query: string): Promise<void> => {
@@ -38,10 +61,7 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
   };
 
   private handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    this.setState({ searchQuery: value });
-
-    void this.fetchGames(value);
+    this.setState({ searchQuery: event.target.value });
   };
 
   private handleSearchSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
@@ -63,7 +83,7 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
 
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>Library</div>
-          <div className={styles.resultsCount}>Viewing {this.state.games.length} entities</div>
+          <div className={styles.resultsCount}>Viewing {games.length} entities</div>
         </div>
 
         {error && <p className={styles.error}>{error}</p>}

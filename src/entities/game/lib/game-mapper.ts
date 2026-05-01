@@ -13,6 +13,6 @@ export const gameMapper = {
   },
 
   mapGenre(dto: IGameCardDTO['genres']): IGameCardEntity['genre'] {
-    return dto?.[0]?.name || 'Unkown';
+    return dto?.[0]?.name || 'Unknown';
   },
 };
