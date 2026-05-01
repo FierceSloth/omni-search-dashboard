@@ -1,5 +1,5 @@
-import type { IGameCardDTO, IGameCardEntity } from '@/features/search-panel/common/types/types';
-import { searchMapper } from '@/features/search-panel/common/utils/search-mapper';
+import { searchMapper } from '@/entities/game/lib/search-mapper';
+import type { IGameCardDTO, IGameCardEntity } from '@/entities/game/model/types';
 
 interface IGamesResponse {
   count: number;

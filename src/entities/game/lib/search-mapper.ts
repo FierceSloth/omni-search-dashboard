@@ -1,4 +1,4 @@
-import type { IGameCardDTO, IGameCardEntity } from '../types/types';
+import type { IGameCardDTO, IGameCardEntity } from '../model/types';
 
 export const searchMapper = {
   mapGameCard(dto: IGameCardDTO): IGameCardEntity {
