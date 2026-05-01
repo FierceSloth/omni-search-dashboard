@@ -1,4 +1,4 @@
-import { SearchPanel } from '@/features/search-panel';
+import { MainPage } from '@/pages/main';
 import { Component, type ReactNode } from 'react';
 
 export class App extends Component {
@@ -8,7 +8,7 @@ export class App extends Component {
         <div className="ambient-light"></div>
 
         <div className="container">
-          <SearchPanel></SearchPanel>
+          <MainPage />
         </div>
       </>
     );
