@@ -3,49 +3,41 @@ import React, { Component, type ReactNode } from 'react';
 import { SearchForm } from '@/shared/ui/search-form';
 import { GameCard, GameService, type IGameCardEntity } from '@entities/game';
 
-import { debounce } from '@/shared/utils/debounce.util';
+import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import styles from './games-discovery.module.scss';
 
 interface IState {
   searchQuery: string;
+  lastSearchedQuery: string;
   games: IGameCardEntity[];
   isLoading: boolean;
   error: string | null;
 }
 
-const debounceTimeout = 500;
-
 export class GamesDiscoveryWidget extends Component<Record<string, never>, IState> {
   public state: IState = {
-    searchQuery: '',
+    searchQuery: localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '',
+    lastSearchedQuery: localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '',
     games: [],
     isLoading: false,
     error: null,
   };
 
-  private debouncedFetch = debounce<string, (query: string) => void>((query: string) => {
-    void this.fetchGames(query);
-  }, debounceTimeout);
-
   public componentDidMount(): void {
-    void this.fetchGames();
-  }
-
-  public componentDidUpdate(_previousProps: Record<string, never>, previousState: IState): void {
-    if (this.state.searchQuery === previousState.searchQuery) {
-      return;
-    }
-
-    if (this.state.searchQuery !== previousState.searchQuery) {
-      this.debouncedFetch(this.state.searchQuery);
-    }
+    void this.fetchGames(this.state.searchQuery);
   }
 
   private fetchGames = async (query: string = ''): Promise<void> => {
-    this.setState({ isLoading: true, error: null });
+    const trimmedQuery = query.trim();
+
+    this.setState({
+      isLoading: true,
+      error: null,
+      lastSearchedQuery: trimmedQuery,
+    });
 
     try {
-      const games = await GameService.searchGames(query);
+      const games = await GameService.searchGames(trimmedQuery);
       this.setState({ games });
     } catch (error) {
       this.setState({ error: error instanceof Error ? error.message : 'Something went wrong' });
@@ -55,15 +47,19 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
   };
 
   private handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ searchQuery: event.target.value.trimStart() });
+    this.setState({ searchQuery: event.target.value });
   };
 
   private handleSearchSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const trimmedQuery = this.state.searchQuery.trim();
 
-    this.setState({ searchQuery: trimmedQuery });
-    void this.fetchGames(trimmedQuery); // ? Bypassing the debounce
+    const trimmedQuery = this.state.searchQuery.trim();
+    if (this.state.lastSearchedQuery === trimmedQuery) {
+      return;
+    }
+
+    localStorage.setItem(STORAGE_KEYS.SEARCH_QUERY, trimmedQuery);
+    void this.fetchGames(trimmedQuery);
   };
 
   public render(): ReactNode {
