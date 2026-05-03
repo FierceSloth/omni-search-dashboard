@@ -1,14 +1,14 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import prettierConfig from 'eslint-config-prettier';
+import prettier from 'eslint-plugin-prettier';
+import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import tseslint from 'typescript-eslint';
 import unicorn from 'eslint-plugin-unicorn';
-import prettier from 'eslint-plugin-prettier';
-import prettierConfig from 'eslint-config-prettier';
-import reactPlugin from 'eslint-plugin-react';
+import globals from 'globals';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import tseslint from 'typescript-eslint';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -75,10 +75,19 @@ export default tseslint.config(
         { ignore: [0, 1, -1], ignoreArrayIndexes: true, enforceConst: true, detectObjects: true },
       ],
 
+      'react/self-closing-comp': [
+        'error',
+        {
+          component: true,
+          html: true,
+        },
+      ],
+
       'unicorn/prevent-abbreviations': [
         'error',
         {
           allowList: {
+            util: true,
             acc: true,
             env: true,
             i: true,

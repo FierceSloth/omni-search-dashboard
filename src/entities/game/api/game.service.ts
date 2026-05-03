@@ -5,7 +5,7 @@ import { RawgClient } from '@/shared/api/rawg-client';
 
 export class GameService {
   public static async searchGames(query: string): Promise<IGameCardEntity[]> {
-    const endpoint = query.trim() ? `/games?search=${encodeURIComponent(query)}` : `/games`;
+    const endpoint = query ? `/games?search=${encodeURIComponent(query)}` : `/games`;
 
     const data = await RawgClient.fetchData<IGamesResponse>(endpoint);
     return data.results?.map((card) => gameMapper.mapGameCard(card));

@@ -1,8 +1,9 @@
 import React, { Component, type ReactNode } from 'react';
 
+import { SearchForm } from '@/shared/ui/search-form';
 import { GameCard, GameService, type IGameCardEntity } from '@entities/game';
-import { SearchInput } from '@shared/ui/search-input';
 
+import { debounce } from '@/shared/utils/debounce.util';
 import styles from './games-discovery.module.scss';
 
 interface IState {
@@ -21,10 +22,13 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
     isLoading: false,
     error: null,
   };
-  private searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  private debouncedFetch = debounce<string, (query: string) => void>((query: string) => {
+    void this.fetchGames(query);
+  }, debounceTimeout);
 
   public componentDidMount(): void {
-    void this.fetchGames(' ');
+    void this.fetchGames();
   }
 
   public componentDidUpdate(_previousProps: Record<string, never>, previousState: IState): void {
@@ -32,22 +36,12 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
       return;
     }
 
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
-
-    this.searchTimeout = setTimeout(() => {
-      void this.fetchGames(this.state.searchQuery);
-    }, debounceTimeout);
-  }
-
-  public componentWillUnmount(): void {
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
+    if (this.state.searchQuery !== previousState.searchQuery) {
+      this.debouncedFetch(this.state.searchQuery);
     }
   }
 
-  private fetchGames = async (query: string): Promise<void> => {
+  private fetchGames = async (query: string = ''): Promise<void> => {
     this.setState({ isLoading: true, error: null });
 
     try {
@@ -61,11 +55,15 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
   };
 
   private handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ searchQuery: event.target.value });
+    this.setState({ searchQuery: event.target.value.trimStart() });
   };
 
   private handleSearchSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    const trimmedQuery = this.state.searchQuery.trim();
+
+    this.setState({ searchQuery: trimmedQuery });
+    void this.fetchGames(trimmedQuery); // ? Bypassing the debounce
   };
 
   public render(): ReactNode {
@@ -73,13 +71,15 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
 
     return (
       <div className={styles.container}>
-        <form className={styles.form} onSubmit={this.handleSearchSubmit}>
-          <SearchInput
-            value={searchQuery}
+        <div className={styles.formWrapper}>
+          <SearchForm
+            className={styles.form}
+            onSubmit={this.handleSearchSubmit}
             onChange={this.handleSearchChange}
             placeholder="Search for awesome games..."
+            value={searchQuery}
           />
-        </form>
+        </div>
 
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>Library</div>
@@ -91,11 +91,13 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
         {isLoading ? (
           <div className={styles.loader}>Loading games...</div>
         ) : (
-          <div className={styles.gameList}>
+          <ul className={styles.gameList}>
             {games.map((game) => (
-              <GameCard key={game.id} {...game} />
+              <li key={game.id}>
+                <GameCard {...game} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
     );

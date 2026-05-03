@@ -1,16 +1,23 @@
-.wrapper {
+.form {
   width: 100%;
   max-width: 720px;
   position: relative;
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 
-  &:hover .icon,
-  &:focus-within .icon {
+  &:hover .button,
+  &:has(.input:focus) .button {
     opacity: 0.5;
+  }
+
+  .button:hover {
+    opacity: 1;
   }
 }
 
-.icon {
+.button {
+  all: unset;
+
+  cursor: pointer;
   position: absolute;
   left: 24px;
   top: 50%;
@@ -23,7 +30,6 @@
   opacity: 0.2;
 
   transition: all 0.3s ease;
-  pointer-events: none;
 }
 
 .input {
