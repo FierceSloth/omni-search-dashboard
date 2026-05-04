@@ -1,9 +1,14 @@
-import React, { Component, type ReactNode } from 'react';
+import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 
+import { Button } from '@/shared/ui/button';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { ErrorTrigger } from '@/shared/ui/error-trigger';
 import { SearchForm } from '@/shared/ui/search-form';
+
 import { GameCard, GameService, type IGameCardEntity } from '@entities/game';
 
-import { STORAGE_KEYS } from '@/shared/constants/local-storage';
+import { ErrorMessage } from '@/shared/ui/error-message';
+import React, { Component, type ReactNode } from 'react';
 import styles from './games-discovery.module.scss';
 
 interface IState {
@@ -12,6 +17,7 @@ interface IState {
   games: IGameCardEntity[];
   isLoading: boolean;
   error: string | null;
+  hasFatalError: boolean;
 }
 
 export class GamesDiscoveryWidget extends Component<Record<string, never>, IState> {
@@ -21,6 +27,7 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
     games: [],
     isLoading: false,
     error: null,
+    hasFatalError: false,
   };
 
   public componentDidMount(): void {
@@ -62,11 +69,18 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
     void this.fetchGames(trimmedQuery);
   };
 
+  private triggerError = (): void => {
+    this.setState({ hasFatalError: true });
+  };
+
   public render(): ReactNode {
-    const { searchQuery, games, isLoading, error } = this.state;
+    const { searchQuery, games, isLoading, error, hasFatalError } = this.state;
 
     return (
       <div className={styles.container}>
+        <Button className={styles.errorButton} type="button" onClick={this.triggerError}>
+          Throw Test Error
+        </Button>
         <div className={styles.formWrapper}>
           <SearchForm
             className={styles.form}
@@ -82,19 +96,29 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
           <div className={styles.resultsCount}>Viewing {games.length} entities</div>
         </div>
 
-        {error && <p className={styles.error}>{error}</p>}
+        <ErrorBoundary>
+          <ErrorTrigger shouldThrow={hasFatalError} />
 
-        {isLoading ? (
-          <div className={styles.loader}>Loading games...</div>
-        ) : (
-          <ul className={styles.gameList}>
-            {games.map((game) => (
-              <li key={game.id}>
-                <GameCard {...game} />
-              </li>
-            ))}
-          </ul>
-        )}
+          {error && (
+            <ErrorMessage
+              title="Connection Lost"
+              description={error}
+              onRetry={() => void this.fetchGames(this.state.lastSearchedQuery)}
+            />
+          )}
+
+          {isLoading ? (
+            <div className={styles.loader}>Loading games...</div>
+          ) : (
+            <ul className={styles.gameList}>
+              {games.map((game) => (
+                <li key={game.id}>
+                  <GameCard {...game} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </ErrorBoundary>
       </div>
     );
   }
