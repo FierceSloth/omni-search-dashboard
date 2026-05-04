@@ -10,8 +10,8 @@ export interface IGameCardDTO {
 export interface IGameCardEntity {
   id: number;
   title: string;
-  imageUrl: string;
-  genre: string;
-  rating?: number;
-  released?: string;
+  imageUrl?: string;
+  description?: string;
+  badge?: string;
+  info?: string;
 }

@@ -1,12 +1,14 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 
 import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorTrigger } from '@/shared/ui/error-trigger';
 import { SearchForm } from '@/shared/ui/search-form';
 
-import { GameCard, GameService, type IGameCardEntity } from '@entities/game';
+import { GameService, type IGameCardEntity } from '@entities/game';
 
+import { gameMapper } from '@/entities/game/lib/game-mapper';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import React, { Component, type ReactNode } from 'react';
 import styles from './games-discovery.module.scss';
@@ -45,7 +47,8 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
 
     try {
       const games = await GameService.searchGames(trimmedQuery);
-      this.setState({ games });
+      const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
+      this.setState({ games: mappedGames });
     } catch (error) {
       this.setState({ error: error instanceof Error ? error.message : 'Something went wrong' });
     } finally {
@@ -113,7 +116,7 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
             <ul className={styles.gameList}>
               {games.map((game) => (
                 <li key={game.id}>
-                  <GameCard {...game} />
+                  <Card {...game} />
                 </li>
               ))}
             </ul>
