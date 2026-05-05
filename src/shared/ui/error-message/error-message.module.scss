@@ -1,6 +1,7 @@
 @use '@app/styles/abstract/mixins' as *;
 
 .container {
+  flex: 1;
   padding: 80px 10px;
   display: flex;
   flex-direction: column;

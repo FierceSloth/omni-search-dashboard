@@ -13,16 +13,18 @@ interface IProps {
 }
 
 export class ErrorMessage extends Component<IProps> {
+  private defaultOnRetry = (): void => globalThis.location.reload();
+
   public render(): ReactNode {
     const { className, title, description, onRetry } = this.props;
 
     return (
-      <div className={classNames(className, styles.container)}>
+      <div className={classNames(styles.container, className)}>
         <div className={styles.icon} dangerouslySetInnerHTML={{ __html: warningIcon }} />
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.description}>{description}</p>
 
-        <Button onClick={onRetry ?? ((): void => globalThis.location.reload())} className={styles.retryButton}>
+        <Button onClick={onRetry ?? this.defaultOnRetry} className={styles.retryButton}>
           <span className={styles.buttonIcon} dangerouslySetInnerHTML={{ __html: retryIcon }} />
           Retry Connection
         </Button>

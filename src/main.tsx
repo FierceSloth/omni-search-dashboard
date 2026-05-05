@@ -1,4 +1,5 @@
 import { App } from '@/app';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -11,7 +12,9 @@ if (rootElement) {
 
   root.render(
     <StrictMode>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </StrictMode>
   );
 } else {

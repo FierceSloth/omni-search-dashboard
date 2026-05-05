@@ -2,7 +2,6 @@ import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 
 import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card';
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorTrigger } from '@/shared/ui/error-trigger';
 import { SearchForm } from '@/shared/ui/search-form';
 
@@ -15,7 +14,6 @@ import styles from './games-discovery.module.scss';
 
 interface IState {
   searchQuery: string;
-  lastSearchedQuery: string;
   games: IGameCardEntity[];
   isLoading: boolean;
   error: string | null;
@@ -25,7 +23,6 @@ interface IState {
 export class GamesDiscoveryWidget extends Component<Record<string, never>, IState> {
   public state: IState = {
     searchQuery: localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '',
-    lastSearchedQuery: localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '',
     games: [],
     isLoading: false,
     error: null,
@@ -33,24 +30,25 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
   };
 
   public componentDidMount(): void {
-    void this.fetchGames(this.state.searchQuery);
+    void this.fetchGames();
   }
 
-  private fetchGames = async (query: string = ''): Promise<void> => {
-    const trimmedQuery = query.trim();
+  private fetchGames = async (): Promise<void> => {
+    const query = this.state.searchQuery.trim();
 
     this.setState({
       isLoading: true,
       error: null,
-      lastSearchedQuery: trimmedQuery,
     });
 
     try {
-      const games = await GameService.searchGames(trimmedQuery);
+      const games = await GameService.searchGames(query);
       const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
       this.setState({ games: mappedGames });
+
+      localStorage.setItem(STORAGE_KEYS.SEARCH_QUERY, query);
     } catch (error) {
-      this.setState({ error: error instanceof Error ? error.message : 'Something went wrong' });
+      this.setState({ error: error instanceof Error ? error.message : 'Something went wrong', games: [] });
     } finally {
       this.setState({ isLoading: false });
     }
@@ -63,13 +61,12 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
   private handleSearchSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    const trimmedQuery = this.state.searchQuery.trim();
-    if (this.state.lastSearchedQuery === trimmedQuery) {
+    const query = this.state.searchQuery.trim();
+    if (localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) === query) {
       return;
     }
 
-    localStorage.setItem(STORAGE_KEYS.SEARCH_QUERY, trimmedQuery);
-    void this.fetchGames(trimmedQuery);
+    void this.fetchGames();
   };
 
   private triggerError = (): void => {
@@ -99,29 +96,21 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
           <div className={styles.resultsCount}>Viewing {games.length} entities</div>
         </div>
 
-        <ErrorBoundary>
-          <ErrorTrigger shouldThrow={hasFatalError} />
+        <ErrorTrigger shouldThrow={hasFatalError} />
 
-          {error && (
-            <ErrorMessage
-              title="Connection Lost"
-              description={error}
-              onRetry={() => void this.fetchGames(this.state.lastSearchedQuery)}
-            />
-          )}
+        {error && <ErrorMessage title="Connection Lost" description={error} />}
 
-          {isLoading ? (
-            <div className={styles.loader}>Loading games...</div>
-          ) : (
-            <ul className={styles.gameList}>
-              {games.map((game) => (
-                <li key={game.id}>
-                  <Card {...game} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </ErrorBoundary>
+        {isLoading ? (
+          <div className={styles.loader}>Loading games...</div>
+        ) : (
+          <ul className={styles.gameList}>
+            {games.map((game) => (
+              <li key={game.id}>
+                <Card {...game} />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }

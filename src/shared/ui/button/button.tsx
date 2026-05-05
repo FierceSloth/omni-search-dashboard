@@ -12,7 +12,7 @@ export class Button extends Component<IProps> {
     const { children, className, ...rest } = this.props;
 
     return (
-      <button className={classNames(className, styles.button)} {...rest}>
+      <button className={classNames(styles.button, className)} {...rest}>
         {children}
       </button>
     );
