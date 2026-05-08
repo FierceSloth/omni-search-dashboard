@@ -70,10 +70,6 @@ export default tseslint.config(
       ],
       '@typescript-eslint/member-ordering': 'off',
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-      'no-magic-numbers': [
-        'error',
-        { ignore: [0, 1, -1], ignoreArrayIndexes: true, enforceConst: true, detectObjects: true },
-      ],
 
       'react/self-closing-comp': [
         'error',
