@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 
 export default tseslint.config(
   {
-    ignores: ['dist'],
+    ignores: ['dist', 'vite.config.ts'],
   },
   {
     files: ['**/*.{ts,tsx}'],
