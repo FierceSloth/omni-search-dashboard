@@ -12,7 +12,7 @@ describe('Button Component', () => {
     expect(buttonElement).toBeInTheDocument();
   });
 
-  it('should call onClick handler when clicked', async () => {
+  it('should call onClick handler when is clicked', async () => {
     const onClickMock = vi.fn();
     const user = userEvent.setup();
 

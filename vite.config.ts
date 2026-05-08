@@ -33,9 +33,9 @@ export default defineConfig({
       exclude: [
         'src/**/*.test.{js,jsx,ts,tsx}',
         'src/**/*.spec.{js,jsx,ts,tsx}',
-        'src/index.{js,jsx,ts,tsx}',
+        'src/**/index.{js,jsx,ts,tsx}',
         'src/main.tsx',
-        'src/setupTests.{js,ts}',
+        'src/setup-tests.{js,ts}',
         'src/**/*.d.ts',
         'src/shared/api/rawg-client.ts',
       ],
