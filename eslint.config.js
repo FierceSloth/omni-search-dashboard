@@ -102,6 +102,7 @@ export default tseslint.config(
       'prettier/prettier': 'error',
       'unicorn/no-null': 'off',
       'unicorn/no-array-for-each': 'off',
+      'unicorn/error-message': 'off',
     },
   }
 );
