@@ -16,7 +16,7 @@ interface IProps {
 
 export class Card extends Component<IProps> {
   private handleImageError = (event: SyntheticEvent<HTMLImageElement>): void => {
-    if (event.currentTarget.src !== FALLBACK_IMAGE || !event.currentTarget.src) {
+    if (event.currentTarget.src !== FALLBACK_IMAGE) {
       event.currentTarget.src = FALLBACK_IMAGE;
     }
   };
