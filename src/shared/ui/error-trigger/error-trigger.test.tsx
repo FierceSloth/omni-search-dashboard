@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { describe, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { ErrorTrigger } from './error-trigger';
 
 describe('ErrorTrigger Component', () => {
