@@ -19,8 +19,6 @@ describe('Button Component', () => {
     render(<Button onClick={onClickMock}>Submit</Button>);
     const buttonElement = screen.getByRole('button', { name: /submit/i });
 
-    expect(buttonElement).toBeInTheDocument();
-
     await user.click(buttonElement);
 
     expect(onClickMock).toHaveBeenCalledOnce();

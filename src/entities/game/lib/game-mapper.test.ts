@@ -6,7 +6,10 @@ describe('GameMapper', () => {
   describe('mapGenre', () => {
     it('should return the first genre name if genres array is valid', () => {
       const genreMock = [{ name: 'Action' }, { name: 'RPG' }];
-      expect(gameMapper.mapGenre(genreMock)).toBe('Action');
+
+      const genreResult = genreMock[0].name;
+
+      expect(gameMapper.mapGenre(genreMock)).toBe(genreResult);
     });
 
     it('should return "Unknown" if genres array is empty', () => {
@@ -21,7 +24,9 @@ describe('GameMapper', () => {
         genres: [{ name: 'Action' }],
       } as IGameCardDTO;
 
-      expect(gameMapper.mapDescription(mockDTO)).toBe('An exciting action game released \n on Sep 17, 2013.');
+      const result = 'An exciting action game released \n on Sep 17, 2013.';
+
+      expect(gameMapper.mapDescription(mockDTO)).toBe(result);
     });
   });
 
@@ -37,12 +42,12 @@ describe('GameMapper', () => {
       };
 
       const mockResult = {
-        id: 3498,
-        title: 'Grand Theft Auto V',
-        imageUrl: 'https://media.rawg.io/media/games/example.jpg',
+        id: mockDTO.id,
+        title: mockDTO.name,
+        info: `${mockDTO.rating} ★`,
         description: 'An exciting action game released \n on Sep 17, 2013.',
-        info: '4.47 ★',
-        badge: 'Action',
+        imageUrl: mockDTO.background_image,
+        badge: mockDTO.genres[0].name,
       };
 
       expect(gameMapper.mapGameCard(mockDTO)).toEqual(mockResult);

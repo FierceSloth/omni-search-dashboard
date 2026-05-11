@@ -12,9 +12,9 @@ describe('MainPage Component', () => {
     render(<MainPage />);
 
     const titleElement = screen.getByRole('heading', { name: /discovery/i });
-    expect(titleElement).toBeInTheDocument();
-
     const widgetMock = screen.getByTestId('mock-games-discovery');
+
+    expect(titleElement).toBeInTheDocument();
     expect(widgetMock).toBeInTheDocument();
   });
 });

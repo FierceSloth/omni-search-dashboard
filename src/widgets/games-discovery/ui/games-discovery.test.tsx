@@ -38,9 +38,9 @@ describe('GamesDiscoveryWidget', () => {
     render(<GamesDiscoveryWidget />);
 
     const loadingElement = screen.getByText('Loading games...');
-    expect(loadingElement).toBeInTheDocument();
+    const gameTitle = await screen.findByText(mockGames[0].name);
 
-    const gameTitle = await screen.findByText('Grand Theft Auto V');
+    expect(loadingElement).toBeInTheDocument();
     expect(gameTitle).toBeInTheDocument();
 
     expect(searchGamesSpy).toHaveBeenCalledWith('');
@@ -48,41 +48,43 @@ describe('GamesDiscoveryWidget', () => {
   });
 
   it('should read query from localStorage on initial render', async () => {
-    getItemSpy.mockReturnValue('Mario');
+    const testQuery = 'Mario';
+    getItemSpy.mockReturnValue(testQuery);
 
     render(<GamesDiscoveryWidget />);
 
-    await screen.findByText('Grand Theft Auto V');
-
+    await screen.findByText(mockGames[0].name);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveValue('Mario');
 
-    expect(searchGamesSpy).toHaveBeenCalledWith('Mario');
+    expect(input).toHaveValue(testQuery);
+    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery);
   });
 
   it('should fetch new games and update localStorage on form submit', async () => {
+    const testQuery = 'Mario';
     const user = userEvent.setup();
     render(<GamesDiscoveryWidget />);
 
-    await screen.findByText('Grand Theft Auto V');
+    await screen.findByText(mockGames[0].name);
 
     const input = screen.getByRole('textbox');
     await user.clear(input);
-    await user.type(input, 'Zelda');
+    await user.type(input, testQuery);
 
     const submitButton = screen.getByRole('button', { name: /submit search/i });
     await user.click(submitButton);
 
-    expect(searchGamesSpy).toHaveBeenCalledWith('Zelda');
-    expect(setItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.SEARCH_QUERY, 'Zelda');
+    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery);
+    expect(setItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.SEARCH_QUERY, testQuery);
   });
 
   it('should not fetch if search query is exactly the same as in localStorage', async () => {
+    const testQuery = 'Witcher';
     const user = userEvent.setup();
-    getItemSpy.mockReturnValue('Witcher');
+    getItemSpy.mockReturnValue(testQuery);
 
     render(<GamesDiscoveryWidget />);
-    await screen.findByText('Grand Theft Auto V');
+    await screen.findByText(mockGames[0].name);
 
     searchGamesSpy.mockClear();
 
@@ -93,11 +95,12 @@ describe('GamesDiscoveryWidget', () => {
   });
 
   it('should render ErrorMessage if API request fails', async () => {
-    searchGamesSpy.mockRejectedValue(new Error('Network disconnected'));
+    const errorText = 'Network disconnected';
+    searchGamesSpy.mockRejectedValue(new Error(errorText));
 
     render(<GamesDiscoveryWidget />);
 
-    const errorElement = await screen.findByText('Network disconnected');
+    const errorElement = await screen.findByText(errorText);
     expect(errorElement).toBeInTheDocument();
   });
 

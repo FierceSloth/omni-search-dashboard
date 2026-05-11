@@ -1,19 +1,24 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import userEvent from '@testing-library/user-event';
 import { ErrorMessage } from './error-message';
 
 describe('ErrorMessage Component', () => {
+  const defaultProps = {
+    title: 'Test Error',
+    description: 'Server is dead',
+  };
+
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
   it('should render title and description correctly', () => {
-    render(<ErrorMessage title="Test Error" description="Server is dead" />);
+    render(<ErrorMessage {...defaultProps} />);
 
-    const titleElement = screen.getByRole('heading', { name: /test error/i });
-    const descElement = screen.getByText('Server is dead');
+    const titleElement = screen.getByText(defaultProps.title);
+    const descElement = screen.getByText(defaultProps.description);
 
     expect(titleElement).toBeInTheDocument();
     expect(descElement).toBeInTheDocument();
@@ -23,10 +28,8 @@ describe('ErrorMessage Component', () => {
     const onRetryMock = vi.fn();
     const user = userEvent.setup();
 
-    render(<ErrorMessage title="Error" description="Something went wrong" onRetry={onRetryMock} />);
+    render(<ErrorMessage {...defaultProps} onRetry={onRetryMock} />);
     const buttonElement = screen.getByRole('button', { name: /retry connection/i });
-
-    expect(buttonElement).toBeInTheDocument();
 
     await user.click(buttonElement);
 
@@ -39,7 +42,7 @@ describe('ErrorMessage Component', () => {
 
     const user = userEvent.setup();
 
-    render(<ErrorMessage title="Error" description="Something went wrong" />);
+    render(<ErrorMessage {...defaultProps} />);
     const buttonElement = screen.getByRole('button', { name: /retry connection/i });
 
     await user.click(buttonElement);

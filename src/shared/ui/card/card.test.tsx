@@ -4,25 +4,34 @@ import { Card } from './card';
 
 describe('Card Component', () => {
   const FALLBACK_IMAGE = 'https://placehold.co/600x400/1a1a1a/aaaaaa?text=No+Image';
+  const defaultProps = {
+    title: 'GTA V',
+    description: 'A game released on Sep 17, 2013.',
+    badge: 'Action',
+    info: '4.47 ★',
+  };
 
   it('should render basic info correctly', () => {
-    render(<Card title="GTA V" description="A game released on Sep 17, 2013." badge="Action" info="4.47 ★" />);
+    render(<Card {...defaultProps} />);
 
-    expect(screen.getByText('GTA V')).toBeInTheDocument();
-    expect(screen.getByText('A game released on Sep 17, 2013.')).toBeInTheDocument();
-    expect(screen.getByText('Action')).toBeInTheDocument();
-    expect(screen.getByText('4.47 ★')).toBeInTheDocument();
+    expect(screen.getByText(defaultProps.title)).toBeInTheDocument();
+    expect(screen.getByText(defaultProps.description)).toBeInTheDocument();
+    expect(screen.getByText(defaultProps.badge)).toBeInTheDocument();
+    expect(screen.getByText(defaultProps.info)).toBeInTheDocument();
   });
 
   it('should not render optional element when not provided', () => {
-    render(<Card title="Minecraft" />);
-    expect(screen.queryByText('A game released on Sep 17, 2013.')).not.toBeInTheDocument();
+    render(<Card title={defaultProps.title} />);
+
+    expect(screen.queryByTestId('badge-container')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('info-container')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('description-container')).not.toBeInTheDocument();
   });
 
   it('should render image with provided imageUrl', () => {
     const testImageUrl = `https://media.rawg.io/media/games/20a/20aa03a10cda45239fe22d035c0ebe64.jpg`;
 
-    render(<Card title="GTA V" imageUrl={testImageUrl} />);
+    render(<Card title={defaultProps.title} imageUrl={testImageUrl} />);
     const imageElement = screen.getByRole('img', { name: /gta v/i });
 
     expect(imageElement).toHaveAttribute('src', testImageUrl);

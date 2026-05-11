@@ -8,14 +8,14 @@ describe('formatDate utility', () => {
   });
 
   it('should formate valid date string correctly', () => {
-    const inputDate = '2023-12-25';
-    const result = formatDate(inputDate);
+    const formattedDate = formatDate('2023-12-25');
+    const result = 'Dec 25, 2023';
 
-    expect(result).toBe('Dec 25, 2023');
+    expect(formattedDate).toBe(result);
   });
 
   it('should handle invalid date strings', () => {
-    const result = formatDate('not-a-real-date');
-    expect(result).toBe('Invalid Date');
+    const formattedDate = formatDate('not-a-real-date');
+    expect(formattedDate).toBe('Invalid Date');
   });
 });

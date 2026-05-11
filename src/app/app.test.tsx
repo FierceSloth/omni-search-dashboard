@@ -14,4 +14,11 @@ describe('App Component', () => {
     const mainPageMock = screen.getByTestId('mock-main-page');
     expect(mainPageMock).toBeInTheDocument();
   });
+
+  it('should render background element', () => {
+    render(<App />);
+
+    const background = screen.getByTestId('background');
+    expect(background).toBeInTheDocument();
+  });
 });

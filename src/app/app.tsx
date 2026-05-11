@@ -5,7 +5,7 @@ export class App extends Component {
   public render(): ReactNode {
     return (
       <>
-        <div className="ambient-light" />
+        <div className="ambient-light" data-testid="background" />
 
         <div className="container">
           <MainPage />
