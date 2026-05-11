@@ -37,10 +37,10 @@ describe('GamesDiscoveryWidget', () => {
   it('should fetch games on mount and render them', async () => {
     render(<GamesDiscoveryWidget />);
 
-    const loadingElement = screen.getByText('Loading games...');
-    const gameTitle = await screen.findByText(mockGames[0].name);
-
+    const loadingElement = screen.getByTestId('loader');
     expect(loadingElement).toBeInTheDocument();
+
+    const gameTitle = await screen.findByText(mockGames[0].name);
     expect(gameTitle).toBeInTheDocument();
 
     expect(searchGamesSpy).toHaveBeenCalledWith('');
