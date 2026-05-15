@@ -1,5 +1,6 @@
 import { App } from '@/app';
 import { MainPage } from '@/pages/main';
+import { NotFoundPage } from '@/pages/not-found/';
 import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -18,7 +19,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTE_PATHS.NOT_FOUND,
-        element: <div>404 - Not Found</div>,
+        element: <NotFoundPage />,
       },
     ],
   },
