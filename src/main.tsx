@@ -1,7 +1,10 @@
-import { App } from '@/app';
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+
+import { router } from '@/app/providers/router';
+import { RouterProvider } from 'react-router-dom';
+
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
 
 import '@app/styles/style.scss';
 
@@ -13,7 +16,7 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <ErrorBoundary>
-        <App />
+        <RouterProvider router={router} />
       </ErrorBoundary>
     </StrictMode>
   );

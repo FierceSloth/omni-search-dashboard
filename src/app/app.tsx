@@ -1,5 +1,5 @@
-import { MainPage } from '@/pages/main';
 import { type ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 
 export function App(): ReactNode {
   return (
@@ -7,7 +7,7 @@ export function App(): ReactNode {
       <div className="ambient-light" data-testid="background" />
 
       <div className="container">
-        <MainPage />
+        <Outlet />
       </div>
     </>
   );
