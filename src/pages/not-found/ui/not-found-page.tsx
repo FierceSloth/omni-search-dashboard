@@ -1,8 +1,9 @@
+import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/button';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ROUTE_PATHS } from '@/shared/constants/routes';
+import retryIcon from '@shared/assets/svg/retry-icon.svg?raw';
 import styles from './not-found-page.module.scss';
 
 export function NotFoundPage(): ReactNode {
@@ -14,7 +15,10 @@ export function NotFoundPage(): ReactNode {
         The path you sought has dissolved into the ether. Return to the collective or search for a new destination.
       </p>
       <Link to={ROUTE_PATHS.HOME}>
-        <Button type="button">Return to Home</Button>
+        <Button type="button">
+          <span className={styles.buttonIcon} dangerouslySetInnerHTML={{ __html: retryIcon }} />
+          Return to Home
+        </Button>
       </Link>
     </div>
   );

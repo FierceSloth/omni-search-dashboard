@@ -4,8 +4,6 @@ import { createRoot } from 'react-dom/client';
 import { router } from '@/app/providers/router';
 import { RouterProvider } from 'react-router-dom';
 
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
-
 import '@app/styles/style.scss';
 
 const rootElement = document.querySelector('#root');
@@ -15,9 +13,7 @@ if (rootElement) {
 
   root.render(
     <StrictMode>
-      <ErrorBoundary>
-        <RouterProvider router={router} />
-      </ErrorBoundary>
+      <RouterProvider router={router} />
     </StrictMode>
   );
 } else {
