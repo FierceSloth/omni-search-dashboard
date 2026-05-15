@@ -1,18 +1,19 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import React, { useEffect, useState, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { ErrorTrigger } from '@/shared/ui/error-trigger';
+import { Loader } from '@/shared/ui/loader/loader';
+import { Pagination } from '@/shared/ui/pagination/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
 import { gameMapper } from '@/entities/game';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
-import { Pagination } from '@/shared/ui/pagination/pagination';
-import { useSearchParams } from 'react-router-dom';
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
@@ -80,7 +81,7 @@ export function GamesDiscoveryWidget(): ReactNode {
 
   const renderContent = (): ReactNode => {
     if (isLoading) {
-      return <div className={styles.loader}>Loading games...</div>;
+      return <Loader dataTestId="loader" text=" Loading games..." />;
     }
 
     if (error) {
