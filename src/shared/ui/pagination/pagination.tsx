@@ -15,10 +15,7 @@ interface IPaginationItemProps {
 }
 
 const formatCounter = (current: number, total: number): string => {
-  const padLength = String(total).length;
-  const paddedCurrent = String(current).padStart(padLength, '0');
-
-  return `${paddedCurrent} / ${total}`;
+  return `${current.toLocaleString('ru-RU')} / ${total.toLocaleString('ru-RU')}`;
 };
 
 export function PaginationItem({ isDisabled, onClick, children }: IPaginationItemProps): ReactNode {

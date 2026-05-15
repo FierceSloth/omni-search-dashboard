@@ -11,6 +11,8 @@ import { gameMapper } from '@/entities/game';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
+import { Pagination } from '@/shared/ui/pagination/pagination';
+import { useSearchParams } from 'react-router-dom';
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
@@ -23,6 +25,10 @@ export function GamesDiscoveryWidget(): ReactNode {
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
   const [inputValue, setInputValue] = useState(savedQuery);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     const fetchGames = async (): Promise<void> => {
       const currentQuery = savedQuery.trim();
@@ -31,9 +37,11 @@ export function GamesDiscoveryWidget(): ReactNode {
       setError(null);
 
       try {
-        const games = await GameService.searchGames(currentQuery);
-        const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
+        const data = await GameService.searchGames(currentQuery, currentPage);
+        const mappedGames = data.games.map((game) => gameMapper.mapGameCard(game));
+
         setGames(mappedGames);
+        setTotalPages(data.totalPages);
       } catch (error_) {
         setError(error_ instanceof Error ? error_.message : 'Something went wrong');
         setGames([]);
@@ -43,7 +51,7 @@ export function GamesDiscoveryWidget(): ReactNode {
     };
 
     void fetchGames();
-  }, [savedQuery]);
+  }, [savedQuery, currentPage]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setInputValue(event.target.value);
@@ -59,10 +67,43 @@ export function GamesDiscoveryWidget(): ReactNode {
     }
 
     setSavedQuery(query);
+    setSearchParams({ page: '1' });
+  };
+
+  const handlePageChange = (page: number): void => {
+    setSearchParams({ page: String(page) });
   };
 
   const triggerError = (): void => {
     setHasFatalError(true);
+  };
+
+  const renderContent = (): ReactNode => {
+    if (isLoading) {
+      return <div className={styles.loader}>Loading games...</div>;
+    }
+
+    if (error) {
+      return <ErrorMessage title="Connection Lost" description={error} />;
+    }
+
+    if (games.length === 0) {
+      return <div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>;
+    }
+
+    return (
+      <>
+        <ul className={styles.gameList}>
+          {games.map((game) => (
+            <li key={game.id}>
+              <Card {...game} />
+            </li>
+          ))}
+        </ul>
+
+        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+      </>
+    );
   };
 
   return (
@@ -87,21 +128,7 @@ export function GamesDiscoveryWidget(): ReactNode {
 
       <ErrorTrigger shouldThrow={hasFatalError} />
 
-      {error && <ErrorMessage title="Connection Lost" description={error} />}
-
-      {isLoading ? (
-        <div className={styles.loader} data-testid="loader">
-          Loading games...
-        </div>
-      ) : (
-        <ul className={styles.gameList}>
-          {games.map((game) => (
-            <li key={game.id}>
-              <Card {...game} />
-            </li>
-          ))}
-        </ul>
-      )}
+      {renderContent()}
     </div>
   );
 }

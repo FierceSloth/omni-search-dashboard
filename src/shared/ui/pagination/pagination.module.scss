@@ -58,6 +58,7 @@
 
 .counter {
   font-family: var(--font-ui);
+  font-variant-numeric: tabular-nums;
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-primary);
