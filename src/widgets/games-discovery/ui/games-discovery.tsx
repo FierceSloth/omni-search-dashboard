@@ -4,9 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card';
-import { ErrorMessage } from '@/shared/ui/error-message';
 import { ErrorTrigger } from '@/shared/ui/error-trigger';
-import { Loader } from '@/shared/ui/loader/loader';
 import { Pagination } from '@/shared/ui/pagination/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
@@ -14,6 +12,7 @@ import { gameMapper } from '@/entities/game';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
+import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer/async-state-renderer';
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
@@ -71,19 +70,8 @@ export function GamesDiscoveryWidget(): ReactNode {
   };
 
   const renderContent = (): ReactNode => {
-    if (isLoading) {
-      return <Loader dataTestId="loader" text=" Loading games..." />;
-    }
-
-    if (error) {
-      return <ErrorMessage title="Connection Lost" description={error} />;
-    }
-
-    if (games.length === 0) {
-      return <div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>;
-    }
-
-    return (
+    const emptyNode = <div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>;
+    const successNode = (
       <>
         <ul className={styles.gameList}>
           {games.map((game) => (
@@ -95,6 +83,18 @@ export function GamesDiscoveryWidget(): ReactNode {
 
         <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
       </>
+    );
+
+    return (
+      <AsyncStateRenderer
+        isLoading={isLoading}
+        error={error}
+        loadingText="Loading games..."
+        isEmpty={games.length === 0}
+        emptyNode={emptyNode}
+      >
+        {successNode}
+      </AsyncStateRenderer>
     );
   };
 
