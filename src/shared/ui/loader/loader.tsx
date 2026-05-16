@@ -3,13 +3,13 @@ import { type ReactNode } from 'react';
 
 import styles from './loader.module.scss';
 
-interface ILoaderProps {
+interface IProps {
   className?: string;
   text?: string;
   dataTestId?: string;
 }
 
-export function Loader({ className, text = 'Loading', dataTestId }: ILoaderProps): ReactNode {
+export function Loader({ className, text, dataTestId }: IProps): ReactNode {
   return (
     <div className={classNames(styles.loaderContainer, className)} data-testid={dataTestId}>
       <div className={styles.spinner} />

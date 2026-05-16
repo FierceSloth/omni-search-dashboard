@@ -1,5 +1,5 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
-import React, { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { Button } from '@/shared/ui/button';
@@ -24,7 +24,6 @@ export function GamesDiscoveryWidget(): ReactNode {
   const [hasFatalError, setHasFatalError] = useState(false);
 
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
-  const [inputValue, setInputValue] = useState(savedQuery);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -38,11 +37,11 @@ export function GamesDiscoveryWidget(): ReactNode {
       setError(null);
 
       try {
-        const data = await GameService.searchGames(currentQuery, currentPage);
-        const mappedGames = data.games.map((game) => gameMapper.mapGameCard(game));
+        const { games, totalPages } = await GameService.searchGames(currentQuery, currentPage);
+        const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
 
         setGames(mappedGames);
-        setTotalPages(data.totalPages);
+        setTotalPages(totalPages);
       } catch (error_) {
         setError(error_ instanceof Error ? error_.message : 'Something went wrong');
         setGames([]);
@@ -54,15 +53,7 @@ export function GamesDiscoveryWidget(): ReactNode {
     void fetchGames();
   }, [savedQuery, currentPage]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setInputValue(event.target.value);
-  };
-
-  const handleSearchSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-
-    const query = inputValue.trim();
-
+  const handleSearchSubmit = (query: string): void => {
     if (savedQuery === query) {
       return;
     }
@@ -115,10 +106,9 @@ export function GamesDiscoveryWidget(): ReactNode {
       <div className={styles.formWrapper}>
         <SearchForm
           className={styles.form}
-          onSubmit={handleSearchSubmit}
-          onChange={handleSearchChange}
+          onSearch={handleSearchSubmit}
+          defaultValue={savedQuery}
           placeholder="Search for awesome games..."
-          value={inputValue}
         />
       </div>
 

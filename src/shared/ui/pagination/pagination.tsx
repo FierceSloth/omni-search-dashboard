@@ -1,34 +1,16 @@
+import { PaginationItem } from '@/shared/ui/pagination/pagination-item/pagination-item';
+import { formatCounter } from '@/shared/utils/format-counter';
 import type { ReactNode } from 'react';
 
 import styles from './pagination.module.scss';
 
-interface IPaginationProps {
+interface IProps {
   currentPage: number;
   totalPage: number;
   onPageChange: (page: number) => void;
 }
 
-interface IPaginationItemProps {
-  children: ReactNode;
-  isDisabled: boolean;
-  onClick: () => void;
-}
-
-const formatCounter = (current: number, total: number): string => {
-  return `${current.toLocaleString('ru-RU')} / ${total.toLocaleString('ru-RU')}`;
-};
-
-export function PaginationItem({ isDisabled, onClick, children }: IPaginationItemProps): ReactNode {
-  return (
-    <li>
-      <button className={styles.button} disabled={isDisabled} onClick={onClick}>
-        {children}
-      </button>
-    </li>
-  );
-}
-
-export function Pagination({ currentPage, totalPage, onPageChange }: IPaginationProps): ReactNode {
+export function Pagination({ currentPage, totalPage, onPageChange }: IProps): ReactNode {
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPage;
 

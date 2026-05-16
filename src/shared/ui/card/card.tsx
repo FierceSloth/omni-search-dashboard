@@ -24,7 +24,7 @@ export function Card({ className, title, imageUrl, description, badge, info }: I
   return (
     <div className={classNames(styles.gameCard, className)}>
       <div className={styles.imageWrapper}>
-        <img className={styles.image} src={imageUrl ?? FALLBACK_IMAGE} alt={title} onError={handleImageError} />
+        <img className={styles.image} src={imageUrl || FALLBACK_IMAGE} alt={title} onError={handleImageError} />
       </div>
 
       <div className={styles.content}>
