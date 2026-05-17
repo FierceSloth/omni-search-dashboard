@@ -1,5 +1,7 @@
 import { Card } from '@/shared/ui/card/card';
+import classNames from 'classnames';
 import type { ReactNode } from 'react';
+
 import styles from './card-list.module.scss';
 
 interface IProps {
@@ -13,7 +15,7 @@ interface IProps {
 
 export function CardList({ className, imageUrl, title, description, badge, info }: IProps): ReactNode {
   return (
-    <Card className={className} imageUrl={imageUrl}>
+    <Card className={classNames(className, styles.card)} imageUrl={imageUrl}>
       <div className={styles.meta}>
         {badge && (
           <div className={styles.badge} data-testid="badge-container">

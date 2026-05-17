@@ -1,3 +1,15 @@
+.card {
+  max-width: 350px;
+
+  &:hover {
+    border-color: var(--border-highlight);
+    transform: translateY(-4px);
+    box-shadow:
+      0 12px 30px rgba(0, 0, 0, 0.5),
+      var(--glow-subtle);
+  }
+}
+
 .meta {
   display: flex;
   justify-content: space-between;
