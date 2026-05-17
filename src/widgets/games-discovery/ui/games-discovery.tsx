@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import { useEffect, useState, type ReactNode } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, Outlet, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { Button } from '@/shared/ui/button';
@@ -72,17 +72,25 @@ export function GamesDiscoveryWidget(): ReactNode {
   const renderContent = (): ReactNode => {
     const emptyNode = <div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>;
     const successNode = (
-      <>
-        <ul className={styles.gameList}>
-          {games.map((game) => (
-            <li key={game.id}>
-              <CardList {...game} />
-            </li>
-          ))}
-        </ul>
+      <div className={styles.splitLayout}>
+        <div className={styles.listColumn}>
+          <ul className={styles.gameList}>
+            {games.map((game) => (
+              <li key={game.id}>
+                <Link to={`/details/${game.id}?page=${currentPage}`}>
+                  <CardList {...game} />
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
-      </>
+          <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+        </div>
+
+        <div className={styles.detailsColumn}>
+          <Outlet />
+        </div>
+      </div>
     );
 
     return (
@@ -113,8 +121,8 @@ export function GamesDiscoveryWidget(): ReactNode {
       </div>
 
       <div className={styles.sectionHeader}>
-        <div className={styles.sectionTitle}>Library</div>
-        <div className={styles.resultsCount}>Viewing {games.length} entities</div>
+        <p className={styles.sectionTitle}>Library</p>
+        <p className={styles.resultsCount}>Viewing {games.length} entities</p>
       </div>
 
       <ErrorTrigger shouldThrow={hasFatalError} />
