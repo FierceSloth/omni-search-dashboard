@@ -1,5 +1,5 @@
 import type { IGamesResponse } from '@/entities/game/model/responses';
-import type { IGameCardDTO } from '@/entities/game/model/types';
+import type { IGameCardDTO, IGameDetailsDTO } from '@/entities/game/model/types';
 import { RawgClient } from '@/shared/api/rawg-client';
 
 export interface ISearchGamesResponse {
@@ -21,5 +21,12 @@ export class GameService {
       games: data.results,
       totalPages: totalPages,
     };
+  }
+
+  public static async getGameById(id: number): Promise<IGameDetailsDTO> {
+    const endpoint = `/games/${id}`;
+
+    const data = await RawgClient.fetchData<IGameDetailsDTO>(endpoint);
+    return data;
   }
 }
