@@ -10,6 +10,7 @@ import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
 import { gameMapper } from '@/entities/game';
+import { buildDetailsPath } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
@@ -72,25 +73,26 @@ export function GamesDiscoveryWidget(): ReactNode {
   const renderContent = (): ReactNode => {
     const emptyNode = <div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>;
     const successNode = (
-      <div className={styles.splitLayout}>
-        <div className={styles.listColumn}>
-          <ul className={styles.gameList}>
-            {games.map((game) => (
-              <li key={game.id}>
-                <Link to={`/details/${game.id}?page=${currentPage}`}>
-                  <CardList {...game} />
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <>
+        <div className={styles.splitLayout}>
+          <div className={styles.listColumn}>
+            <ul className={styles.gameList}>
+              {games.map((game) => (
+                <li key={game.id}>
+                  <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                    <CardList {...game} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+          <div className={styles.detailsColumn}>
+            <Outlet />
+          </div>
         </div>
-
-        <div className={styles.detailsColumn}>
-          <Outlet />
-        </div>
-      </div>
+        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+      </>
     );
 
     return (

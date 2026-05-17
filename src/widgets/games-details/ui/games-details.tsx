@@ -1,9 +1,12 @@
-import { gameMapper, GameService } from '@/entities/game';
-import type { IGameDetailsEntity } from '@/entities/game/model/types';
-import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
-import { CardDetail } from '@/shared/ui/card-detail';
+import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+
+import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
+import { CardDetail } from '@/shared/ui/card-detail';
+
+import { gameMapper, GameService } from '@/entities/game';
+import type { IGameDetailsEntity } from '@/entities/game/model/types';
 
 import styles from './games-details.module.scss';
 
@@ -40,7 +43,7 @@ export function GameDetailsWidget(): ReactNode {
   }, [id]);
 
   const handleClose = (): void => {
-    void navigate(`/?${searchParams.toString()}`);
+    void navigate(`${ROUTE_PATHS.HOME}?${searchParams.toString()}`);
   };
 
   return (

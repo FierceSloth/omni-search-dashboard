@@ -2,6 +2,7 @@ import { Card } from '@/shared/ui/card/card';
 import type { ReactNode } from 'react';
 
 import styles from './card-detail.module.scss';
+import classNames from 'classnames';
 
 interface IProps {
   className?: string;
@@ -29,7 +30,7 @@ export function CardDetail({
   onClose,
 }: IProps): ReactNode {
   return (
-    <Card className={className} imageUrl={imageUrl}>
+    <Card className={classNames(className, styles.card)} imageUrl={imageUrl}>
       <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close details">
         ✕
       </button>
