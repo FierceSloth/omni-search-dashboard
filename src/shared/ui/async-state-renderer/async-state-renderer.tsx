@@ -1,5 +1,5 @@
 import { ErrorMessage } from '@/shared/ui/error-message';
-import { Loader } from '@/shared/ui/loader/loader';
+import { Loader } from '@/shared/ui/loader';
 import type { ReactNode } from 'react';
 
 interface IProps {

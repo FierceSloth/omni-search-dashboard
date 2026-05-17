@@ -2,17 +2,17 @@ import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { Button } from '@/shared/ui/button';
-import { Card } from '@/shared/ui/card';
+import { CardList } from '@/shared/ui/card-list';
 import { ErrorTrigger } from '@/shared/ui/error-trigger';
-import { Pagination } from '@/shared/ui/pagination/pagination';
+import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
 import { gameMapper } from '@/entities/game';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
-import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer/async-state-renderer';
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
@@ -76,7 +76,7 @@ export function GamesDiscoveryWidget(): ReactNode {
         <ul className={styles.gameList}>
           {games.map((game) => (
             <li key={game.id}>
-              <Card {...game} />
+              <CardList {...game} />
             </li>
           ))}
         </ul>

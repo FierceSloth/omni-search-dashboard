@@ -1,9 +1,9 @@
+import { FALLBACK_IMAGE } from '@/shared/constants/constants';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Card } from './card';
 
 describe('Card Component', () => {
-  const FALLBACK_IMAGE = 'https://placehold.co/600x400/1a1a1a/aaaaaa?text=No+Image';
   const defaultProps = {
     title: 'GTA V',
     description: 'A game released on Sep 17, 2013.',
