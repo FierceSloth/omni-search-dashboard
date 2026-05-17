@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, Outlet, useSearchParams } from 'react-router-dom';
+import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { Button } from '@/shared/ui/button';
@@ -10,7 +10,7 @@ import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
 import { gameMapper } from '@/entities/game';
-import { buildDetailsPath } from '@/shared/constants/routes';
+import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
@@ -25,9 +25,10 @@ export function GamesDiscoveryWidget(): ReactNode {
 
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGames = async (): Promise<void> => {
@@ -59,11 +60,11 @@ export function GamesDiscoveryWidget(): ReactNode {
     }
 
     setSavedQuery(query);
-    setSearchParams({ page: '1' });
+    void navigate(`${ROUTE_PATHS.HOME}?page=1`);
   };
 
   const handlePageChange = (page: number): void => {
-    setSearchParams({ page: String(page) });
+    void navigate(`${ROUTE_PATHS.HOME}?page=${page}`);
   };
 
   const triggerError = (): void => {
