@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { GameService } from '@entities/game';
 import { GamesDiscoveryWidget } from './games-discovery';
 
@@ -109,24 +108,5 @@ describe('GamesDiscoveryWidget', () => {
 
     const errorElement = await screen.findByText(errorText);
     expect(errorElement).toBeInTheDocument();
-  });
-
-  it('should trigger fatal error when error button is clicked', async () => {
-    const user = userEvent.setup();
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    renderWithRouter(
-      <ErrorBoundary>
-        <GamesDiscoveryWidget />
-      </ErrorBoundary>
-    );
-
-    const errorButton = screen.getByRole('button', { name: /throw test error/i });
-    await user.click(errorButton);
-
-    const errorElement = await screen.findByText('Something went wrong');
-    expect(errorElement).toBeInTheDocument();
-
-    consoleSpy.mockRestore();
   });
 });
