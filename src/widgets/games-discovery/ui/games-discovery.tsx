@@ -3,9 +3,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
-import { Button } from '@/shared/ui/button';
 import { CardPreview } from '@/shared/ui/card-preview';
-import { ErrorTrigger } from '@/shared/ui/error-trigger';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
@@ -21,7 +19,6 @@ export function GamesDiscoveryWidget(): ReactNode {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasFatalError, setHasFatalError] = useState(false);
 
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
 
@@ -67,53 +64,8 @@ export function GamesDiscoveryWidget(): ReactNode {
     void navigate(`${ROUTE_PATHS.HOME}?page=${page}`);
   };
 
-  const triggerError = (): void => {
-    setHasFatalError(true);
-  };
-
-  const renderContent = (): ReactNode => {
-    const emptyNode = <div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>;
-    const successNode = (
-      <>
-        <div className={styles.splitLayout}>
-          <div className={styles.listColumn}>
-            <ul className={styles.gameList}>
-              {games.map((game) => (
-                <li key={game.id}>
-                  <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
-                    <CardPreview {...game} />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={styles.detailsColumn}>
-            <Outlet />
-          </div>
-        </div>
-        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
-      </>
-    );
-
-    return (
-      <AsyncStateRenderer
-        isLoading={isLoading}
-        error={error}
-        loadingText="Loading games..."
-        isEmpty={games.length === 0}
-        emptyNode={emptyNode}
-      >
-        {successNode}
-      </AsyncStateRenderer>
-    );
-  };
-
   return (
     <div className={styles.container}>
-      <Button className={styles.errorButton} type="button" onClick={triggerError}>
-        Throw Test Error
-      </Button>
       <div className={styles.formWrapper}>
         <SearchForm
           className={styles.form}
@@ -122,15 +74,38 @@ export function GamesDiscoveryWidget(): ReactNode {
           placeholder="Search for awesome games..."
         />
       </div>
-
       <div className={styles.sectionHeader}>
         <p className={styles.sectionTitle}>Library</p>
         <p className={styles.resultsCount}>Viewing {games.length} entities</p>
       </div>
+      <AsyncStateRenderer
+        isLoading={isLoading}
+        error={error}
+        loadingText="Loading games..."
+        isEmpty={games.length === 0}
+        emptyNode={<div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>}
+      >
+        <>
+          <div className={styles.splitLayout}>
+            <div className={styles.listColumn}>
+              <ul className={styles.gameList}>
+                {games.map((game) => (
+                  <li key={game.id}>
+                    <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                      <CardPreview {...game} />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-      <ErrorTrigger shouldThrow={hasFatalError} />
-
-      {renderContent()}
+            <div className={styles.detailsColumn}>
+              <Outlet />
+            </div>
+          </div>
+          <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+        </>
+      </AsyncStateRenderer>
     </div>
   );
 }
