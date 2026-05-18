@@ -88,18 +88,6 @@
   margin-bottom: 20px;
 }
 
-.tagBadge {
-  font-family: var(--font-ui);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.05);
-}
-
 .scrollableContent {
   max-height: 150px;
   overflow-y: auto;

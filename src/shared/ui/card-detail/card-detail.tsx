@@ -1,8 +1,9 @@
 import { Card } from '@/shared/ui/card/card';
 import type { ReactNode } from 'react';
 
-import styles from './card-detail.module.scss';
+import { Tag } from '@/shared/ui/tag/tag';
 import classNames from 'classnames';
+import styles from './card-detail.module.scss';
 
 interface IProps {
   className?: string;
@@ -53,9 +54,7 @@ export function CardDetail({
       {tags && tags.length > 0 && (
         <div className={styles.tags}>
           {tags.map((tag) => (
-            <span key={tag} className={styles.tagBadge}>
-              {tag}
-            </span>
+            <Tag key={tag}>{tag}</Tag>
           ))}
         </div>
       )}
