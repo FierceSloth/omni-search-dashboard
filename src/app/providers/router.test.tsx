@@ -15,10 +15,6 @@ vi.mock('@/app', () => {
     ),
   };
 });
-
-vi.mock('@/app', () => ({
-  App: ({ children }: { children: React.ReactNode }): ReactNode => <div data-testid="app-layout">{children}</div>,
-}));
 vi.mock('@/pages/main', () => ({
   MainPage: (): ReactNode => <div data-testid="main-page" />,
 }));
