@@ -1,19 +1,18 @@
 import { ROUTE_PATHS } from '@/shared/constants/routes';
+import { Header } from '@/shared/ui/header';
 import { Tag } from '@/shared/ui/tag';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import styles from './about-page.module.scss';
 
 export function AboutPage(): ReactNode {
   return (
     <div className={styles.pageContainer}>
-      <header className={styles.header}>
-        <Link to={ROUTE_PATHS.HOME} className={styles.backLink}>
-          ← BACK TO LIBRARY
-        </Link>
-        <h1 className={styles.title}>About Omni Search Dashboard</h1>
-        <p className={styles.subtitle}>PROJECT DOCUMENTATION & VISION</p>
-      </header>
+      <Header
+        title="About Omni Search Dashboard"
+        subtitle="PROJECT DOCUMENTATION & VISION"
+        linkTo={ROUTE_PATHS.HOME}
+        linkText="← BACK TO LIBRARY"
+      />
 
       <div className={styles.contentCard}>
         <section className={styles.section}>
