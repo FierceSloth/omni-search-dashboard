@@ -1,4 +1,5 @@
 import { App } from '@/app';
+import { AboutPage } from '@/pages/about';
 import { MainPage } from '@/pages/main';
 import { NotFoundPage } from '@/pages/not-found/';
 import { ROUTE_PATHS } from '@/shared/constants/routes';
@@ -29,7 +30,7 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTE_PATHS.ABOUT,
-        element: <div>About Page Stub</div>,
+        element: <AboutPage />,
       },
       {
         path: ROUTE_PATHS.NOT_FOUND,
