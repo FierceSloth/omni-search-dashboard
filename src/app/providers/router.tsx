@@ -5,9 +5,9 @@ import { NotFoundPage } from '@/pages/not-found/';
 import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { GameDetailsWidget } from '@/widgets/games-details';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 
-export const router = createBrowserRouter([
+export const routesConfig: RouteObject[] = [
   {
     path: ROUTE_PATHS.HOME,
     element: <App />,
@@ -38,4 +38,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+];
+
+export const router = createBrowserRouter(routesConfig);
