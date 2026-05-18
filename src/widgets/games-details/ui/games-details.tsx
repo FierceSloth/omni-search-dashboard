@@ -11,7 +11,7 @@ import type { IGameDetailsEntity } from '@/entities/game/model/types';
 import styles from './games-details.module.scss';
 
 export function GameDetailsWidget(): ReactNode {
-  const [details, setDetails] = useState<IGameDetailsEntity | undefined>();
+  const [details, setDetails] = useState<IGameDetailsEntity | null>();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export function GameDetailsWidget(): ReactNode {
         setDetails(mappedDetails);
       } catch (error_) {
         setError(error_ instanceof Error ? error_.message : 'Something went wrong');
-        setDetails(undefined);
+        setDetails(null);
       } finally {
         setIsLoading(false);
       }

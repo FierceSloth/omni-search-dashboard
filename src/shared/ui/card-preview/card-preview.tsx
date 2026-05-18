@@ -2,7 +2,7 @@ import { Card } from '@/shared/ui/card/card';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-import styles from './card-list.module.scss';
+import styles from './card-preview.module.scss';
 
 interface IProps {
   className?: string;
@@ -13,7 +13,7 @@ interface IProps {
   info?: string;
 }
 
-export function CardList({ className, imageUrl, title, description, badge, info }: IProps): ReactNode {
+export function CardPreview({ className, imageUrl, title, description, badge, info }: IProps): ReactNode {
   return (
     <Card className={classNames(className, styles.card)} imageUrl={imageUrl}>
       <div className={styles.meta}>

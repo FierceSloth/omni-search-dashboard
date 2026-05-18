@@ -4,7 +4,7 @@ import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { Button } from '@/shared/ui/button';
-import { CardList } from '@/shared/ui/card-list';
+import { CardPreview } from '@/shared/ui/card-preview';
 import { ErrorTrigger } from '@/shared/ui/error-trigger';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
@@ -81,7 +81,7 @@ export function GamesDiscoveryWidget(): ReactNode {
               {games.map((game) => (
                 <li key={game.id}>
                   <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
-                    <CardList {...game} />
+                    <CardPreview {...game} />
                   </Link>
                 </li>
               ))}
