@@ -4,7 +4,7 @@ import { useContext } from 'react';
 export function useTheme(): IThemeContext {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme должен использоваться строго внутри ThemeProvider');
+    throw new Error('useTheme must be used strictly within ThemeProvider');
   }
   return context;
 }
