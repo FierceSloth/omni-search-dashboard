@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { router } from '@/app/providers/router';
 import { RouterProvider } from 'react-router-dom';
 
+import { ThemeProvider } from '@/shared/lib/context/theme';
 import '@app/styles/style.scss';
 
 const rootElement = document.querySelector('#root');
@@ -13,7 +14,9 @@ if (rootElement) {
 
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </StrictMode>
   );
 } else {

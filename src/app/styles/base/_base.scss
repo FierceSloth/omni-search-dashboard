@@ -111,6 +111,13 @@ body {
   filter: blur(40px);
 }
 
+.theme-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: var(--z-sticky);
+}
+
 h1,
 h2,
 h3,
