@@ -1,4 +1,4 @@
-import { useTheme } from '@/shared/lib/context/theme/use-theme';
+import { useTheme } from '@/shared/lib/context/theme';
 import classNames from 'classnames';
 import { type ReactNode } from 'react';
 
