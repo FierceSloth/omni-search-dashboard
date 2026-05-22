@@ -17,11 +17,14 @@
   position: relative;
 
   background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-sm);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--glow-subtle);
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    var(--glow-subtle);
 
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -43,18 +46,22 @@
 
   &:hover {
     background: var(--surface-2);
-    border-color: var(--border-active);
-    box-shadow: var(--glow-active);
+    border-color: var(--border-highlight);
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.4),
+      var(--glow-active);
     transform: scale(1.05);
   }
 
   &:checked {
-    background: var(--text-primary);
-    border-color: var(--text-primary);
-    box-shadow: var(--glow-active);
+    background: #ffffff;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      var(--glow-active);
 
     &::after {
       opacity: 1;
+      border-color: #000000;
       transform: translate(-50%, -50%) rotate(45deg) scale(1);
     }
   }

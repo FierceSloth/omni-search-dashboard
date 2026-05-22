@@ -2,6 +2,7 @@ import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
+import { ToggleSelectionCheckbox } from '@/features/selected-cards';
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
@@ -92,7 +93,10 @@ export function GamesDiscoveryWidget(): ReactNode {
                 {games.map((game) => (
                   <li key={game.id}>
                     <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
-                      <CardPreview {...game} />
+                      <CardPreview
+                        {...game}
+                        actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
+                      />
                     </Link>
                   </li>
                 ))}
