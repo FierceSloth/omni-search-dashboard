@@ -1,8 +1,8 @@
 import type { IGameCardEntity } from '@/entities/game';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { useAppDispatch, useAppSelector } from '@app/store';
-import type { ReactNode } from 'react';
-import { selectSelectedCardIds } from '../model/selectors';
+import { useMemo, type ReactNode } from 'react';
+import { selectIsCardSelectedById } from '../model/selectors';
 import { toggleSelected } from '../model/slice';
 
 interface IProps {
@@ -17,8 +17,8 @@ const handleStopPropagation = (event: React.MouseEvent): void => {
 export function ToggleSelectionCheckbox({ card, className }: IProps): ReactNode {
   const dispatch = useAppDispatch();
 
-  const selectedIdsSet = useAppSelector(selectSelectedCardIds);
-  const isSelected = selectedIdsSet.has(card.id);
+  const selectIsCardSelected = useMemo(() => selectIsCardSelectedById(card.id), [card.id]);
+  const isSelected = useAppSelector(selectIsCardSelected);
 
   const handleCheckboxChange = (): void => {
     dispatch(toggleSelected(card));
