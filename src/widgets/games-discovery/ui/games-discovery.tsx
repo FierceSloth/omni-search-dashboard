@@ -13,6 +13,7 @@ import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
+import { SelectedFlyout } from '@/widgets/selected-flyout/ui/selected-flyout';
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
@@ -107,7 +108,10 @@ export function GamesDiscoveryWidget(): ReactNode {
               <Outlet />
             </div>
           </div>
+
           <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+
+          <SelectedFlyout />
         </>
       </AsyncStateRenderer>
     </div>
