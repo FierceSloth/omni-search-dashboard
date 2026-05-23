@@ -30,12 +30,7 @@
 
 .themeButton {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  top: 20px;
+  left: 20px;
   z-index: var(--z-sticky);
-
-  @include media-sm {
-    left: 20px;
-    top: 20px;
-  }
 }

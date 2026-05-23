@@ -1,5 +1,5 @@
 import { PaginationItem } from '@/shared/ui/pagination/pagination-item/pagination-item';
-import { formatCounter } from '@/shared/utils/format-counter';
+import { formatCounter } from '@/shared/utils/format-counter.util';
 import type { ReactNode } from 'react';
 
 import styles from './pagination.module.scss';
