@@ -1,0 +1,36 @@
+@use '@app/styles/abstract/mixins' as *;
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  padding: 0 20px;
+
+  @include media-sm {
+    padding: 0 15px;
+  }
+}
+
+.ambientLight {
+  position: fixed;
+  top: -20vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70vw;
+  height: 70vh;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
+  z-index: var(--z-behind);
+  filter: blur(40px);
+}
+
+.themeButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: var(--z-sticky);
+}
