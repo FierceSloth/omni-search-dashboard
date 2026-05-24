@@ -8,7 +8,6 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/app/store';
-
 import { buildDetailsPath } from '@/shared/constants/routes';
 import { downloadCsv, escapeCsv } from '@/shared/utils/download-csv.util';
 
