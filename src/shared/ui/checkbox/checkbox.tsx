@@ -8,5 +8,5 @@ interface IProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Checkbox({ className, ...rest }: IProps): ReactNode {
-  return <input className={classNames(styles.checkbox, className)} type="checkbox" {...rest} />;
+  return <input {...rest} className={classNames(styles.checkbox, className)} type="checkbox" />;
 }
