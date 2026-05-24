@@ -2,11 +2,11 @@ import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { ToggleSelectionCheckbox } from '@/features/card-selection';
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
+import { ToggleSelectionCheckbox } from '@features/card-selection';
 
 import { gameMapper } from '@/entities/game';
 import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
