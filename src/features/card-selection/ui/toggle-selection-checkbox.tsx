@@ -1,9 +1,7 @@
 import type { IGameCardEntity } from '@/entities/game';
 import { Checkbox } from '@/shared/ui/checkbox';
-import { useAppDispatch, useAppSelector } from '@app/store';
+import { selectIsCardSelectedById, toggleSelected, useAppDispatch, useAppSelector } from '@app/store';
 import { useMemo, type ReactNode } from 'react';
-import { selectIsCardSelectedById } from '../model/selectors';
-import { toggleSelected } from '../model/slice';
 
 interface IProps {
   card: IGameCardEntity;

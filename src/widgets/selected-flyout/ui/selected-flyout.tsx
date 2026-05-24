@@ -1,18 +1,26 @@
-import { useAppDispatch, useAppSelector } from '@/app/store';
-import { clearAllSelected, selectSelectedCards } from '@/features/card-selection';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import { selectSelectedCardsCount } from '../model/selectors';
+
+import {
+  clearAllSelected,
+  selectSelectedCards,
+  selectSelectedCardsCount,
+  useAppDispatch,
+  useAppSelector,
+} from '@/app/store';
 
 import { buildDetailsPath } from '@/shared/constants/routes';
-import { downloadCsv } from '@/shared/utils/download-csv.util';
+import { downloadCsv, escapeCsv } from '@/shared/utils/download-csv.util';
+
+import { Button } from '@/shared/ui/button';
+
 import styles from './selected-flyout.module.scss';
 
 interface IProps {
   className?: string;
 }
 
-const escapeCsv = (text?: string): string => (text ? `"${text.replaceAll('"', '""')}"` : '""');
+const HEADERS = ['ID', 'Title', 'Description', 'Badge', 'Info', 'URL'];
 
 export function SelectedFlyout({ className }: IProps): ReactNode {
   const dispatch = useAppDispatch();
@@ -27,8 +35,6 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
   };
 
   const handleDownloadClick = (): void => {
-    const headers = ['ID', 'Title', 'Description', 'Badge', 'Info', 'URL'];
-
     const rows = selectedCards.map((card) => {
       const detailsUrl = `${globalThis.location.origin}${buildDetailsPath(card.id)}`;
 
@@ -42,7 +48,7 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
       ].join(',');
     });
 
-    const csvContent = [headers.join(','), ...rows].join('\n');
+    const csvContent = [HEADERS.join(','), ...rows].join('\n');
     const fileName = `${selectedCount}_items.csv`;
 
     downloadCsv(fileName, csvContent);
@@ -56,26 +62,14 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
           <span className={styles.text}>{selectedCount === 1 ? 'Item selected' : 'Items selected'}</span>
         </div>
 
-        <div className={styles.divider} aria-hidden="true" />
-
         <div className={styles.actions}>
-          <button
-            className={classNames(styles.actionButton, styles.ghostButton)}
-            type="button"
-            onClick={handleClearClick}
-            aria-label="Clear selection"
-          >
+          <Button variant="ghost" type="button" onClick={handleClearClick} aria-label="Clear selection">
             Clear
-          </button>
+          </Button>
 
-          <button
-            className={classNames(styles.actionButton, styles.primaryButton)}
-            type="button"
-            onClick={handleDownloadClick}
-            aria-label="Download selection"
-          >
+          <Button variant="primary" type="button" onClick={handleDownloadClick} aria-label="Download selection">
             Download
-          </button>
+          </Button>
         </div>
       </div>
     </div>
