@@ -14,7 +14,7 @@ export function GameDetailsWidget(): ReactNode {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { data, isLoading, isFetching, error } = useGetGameByIdQuery(Number(id));
+  const { data, isFetching, error } = useGetGameByIdQuery(Number(id));
   const details = data;
 
   const handleClose = (): void => {
@@ -24,7 +24,7 @@ export function GameDetailsWidget(): ReactNode {
   return (
     <div className={styles.container}>
       <AsyncStateRenderer
-        isLoading={isLoading || isFetching}
+        isLoading={isFetching}
         error={error ? 'Failed to fetch game details' : null}
         loadingText="Loading game details..."
       >
