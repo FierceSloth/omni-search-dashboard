@@ -13,7 +13,7 @@ import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 
 import { gameMapper, type IGameCardEntity } from '@/entities/game';
-import { useGetGamesQuery } from '@/entities/game/api/game-api';
+import { useGetGamesQuery } from '@/entities/game';
 
 import styles from './games-discovery.module.scss';
 
