@@ -1,10 +1,9 @@
 import classNames from 'classnames';
 import { type ButtonHTMLAttributes, type ReactNode } from 'react';
-
 import styles from './icon-button.module.scss';
 
 interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  className: string;
+  className?: string;
   children: ReactNode;
 }
 

@@ -1,4 +1,4 @@
-import { ThemeButton } from '@/shared/ui/theme-button/theme-button';
+import { ThemeSwitcher } from '@/features/theme-switcher';
 import { type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ export function App(): ReactNode {
   return (
     <>
       <div className={styles.ambientLight} data-testid="background" />
-      <ThemeButton className={styles.themeButton} />
+      <ThemeSwitcher className={styles.themeSwitcher} />
 
       <div className={styles.container}>
         <Outlet />
