@@ -2,13 +2,18 @@ import { ThemeSwitcher } from '@/features/theme-switcher';
 import { type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { RefreshButton } from '@/features/refresh-data';
 import styles from './app.module.scss';
 
 export function App(): ReactNode {
   return (
     <>
       <div className={styles.ambientLight} data-testid="background" />
-      <ThemeSwitcher className={styles.themeSwitcher} />
+
+      <div className={styles.toolbar}>
+        <ThemeSwitcher />
+        <RefreshButton />
+      </div>
 
       <div className={styles.container}>
         <Outlet />
