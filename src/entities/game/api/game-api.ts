@@ -1,3 +1,4 @@
+import { GAME_API_TAGS } from '@/entities/game/api/api-tags';
 import { gameMapper } from '@/entities/game/lib/game-mapper';
 import type { IGamesResponse } from '@/entities/game/model/responses';
 import type { IGameCardEntity, IGameDetailsDTO, IGameDetailsEntity } from '@/entities/game/model/types';
@@ -17,7 +18,7 @@ export const gameApi = createApi({
 
   baseQuery: fetchBaseQuery({ baseUrl: 'https://api.rawg.io/api' }),
 
-  tagTypes: ['Games', 'GameDetails'],
+  tagTypes: Object.values(GAME_API_TAGS),
   keepUnusedDataFor: CACHE_TTL,
 
   endpoints: (builder) => ({
@@ -37,7 +38,7 @@ export const gameApi = createApi({
         totalPages: Math.ceil(response.count / PAGE_SIZE),
       }),
 
-      providesTags: ['Games'],
+      providesTags: [GAME_API_TAGS.GAMES],
     }),
 
     getGameById: builder.query<IGameDetailsEntity, number>({
@@ -52,7 +53,7 @@ export const gameApi = createApi({
         return gameMapper.mapGameDetails(response);
       },
 
-      providesTags: (_result, _error, id) => [{ type: 'GameDetails', id }],
+      providesTags: (_result, _error, id) => [{ type: GAME_API_TAGS.GAME_DETAILS, id }],
     }),
   }),
 });

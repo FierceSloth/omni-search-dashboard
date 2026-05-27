@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import { useState, type ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { GAME_API_TAGS } from '@/entities/game';
 import { gameApi } from '@/entities/game/api/game-api';
 import { IconButton } from '@/shared/ui/icon-button';
 
 import refreshIcon from '@shared/assets/svg/refresh-icon.svg?raw';
-
 import styles from './refresh-button.module.scss';
 
 interface IProps {
@@ -21,7 +21,7 @@ export function RefreshButton({ className }: IProps): ReactNode {
     if (isRefreshing) return;
 
     setIsRefreshing(true);
-    dispatch(gameApi.util.invalidateTags(['Games', 'GameDetails']));
+    dispatch(gameApi.util.invalidateTags([GAME_API_TAGS.GAMES, GAME_API_TAGS.GAME_DETAILS]));
 
     setTimeout(() => {
       setIsRefreshing(false);
