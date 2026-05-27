@@ -101,6 +101,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error'],
       'prettier/prettier': 'error',
       'unicorn/no-null': 'off',
+      'unicorn/prefer-spread': 'off',
       'unicorn/no-array-for-each': 'off',
       'unicorn/error-message': 'off',
     },

@@ -1,3 +1,3 @@
+export { gameApi } from './api/game-api';
 export { gameMapper } from './lib/game-mapper';
-export { GameService } from './api/game.service';
 export type { IGameCardEntity } from './model/types';
