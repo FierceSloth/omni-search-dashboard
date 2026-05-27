@@ -5,7 +5,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardDetail } from '@/shared/ui/card-detail';
 
-import { gameMapper, useGetGameByIdQuery } from '@/entities/game';
+import { useGetGameByIdQuery } from '@/entities/game';
 
 import styles from './games-details.module.scss';
 
@@ -15,7 +15,7 @@ export function GameDetailsWidget(): ReactNode {
   const navigate = useNavigate();
 
   const { data, isLoading, isFetching, error } = useGetGameByIdQuery(Number(id));
-  const details = data && gameMapper.mapGameDetails(data);
+  const details = data;
 
   const handleClose = (): void => {
     void navigate(`${ROUTE_PATHS.HOME}?${searchParams.toString()}`);

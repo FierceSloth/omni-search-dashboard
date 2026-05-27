@@ -1,10 +1,10 @@
+import { gameMapper } from '@/entities/game/lib/game-mapper';
 import type { IGamesResponse } from '@/entities/game/model/responses';
-import type { IGameDetailsDTO } from '@/entities/game/model/types';
-import { type IGameCardDTO } from '@/entities/game/model/types';
+import type { IGameCardEntity, IGameDetailsDTO, IGameDetailsEntity } from '@/entities/game/model/types';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export interface ISearchGamesResponse {
-  games: IGameCardDTO[];
+  games: IGameCardEntity[];
   totalPages: number;
 }
 
@@ -33,20 +33,24 @@ export const gameApi = createApi({
       }),
 
       transformResponse: (response: IGamesResponse): ISearchGamesResponse => ({
-        games: response.results,
+        games: response.results.map((game) => gameMapper.mapGameCard(game)),
         totalPages: Math.ceil(response.count / PAGE_SIZE),
       }),
 
       providesTags: ['Games'],
     }),
 
-    getGameById: builder.query<IGameDetailsDTO, number>({
+    getGameById: builder.query<IGameDetailsEntity, number>({
       query: (id) => ({
         url: `/games/${id}`,
         params: {
           key: API_KEY,
         },
       }),
+
+      transformResponse: (response: IGameDetailsDTO): IGameDetailsEntity => {
+        return gameMapper.mapGameDetails(response);
+      },
 
       providesTags: (_result, _error, id) => [{ type: 'GameDetails', id }],
     }),

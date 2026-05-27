@@ -12,7 +12,6 @@ import { ToggleSelectionCheckbox } from '@features/card-selection';
 import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 
-import { gameMapper, type IGameCardEntity } from '@/entities/game';
 import { useGetGamesQuery } from '@/entities/game';
 
 import styles from './games-discovery.module.scss';
@@ -24,9 +23,8 @@ export function GamesDiscoveryWidget(): ReactNode {
   const currentPage = Number(searchParams.get('page')) || 1;
   const navigate = useNavigate();
 
-  const { data, isLoading, isFetching, error } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
-  const games: IGameCardEntity[] = data?.games.map((game) => gameMapper.mapGameCard(game)) || [];
-  const totalPages = data?.totalPages || 0;
+  const { data, isFetching, error } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
+  const { games = [], totalPages = 0 } = data || {};
 
   const handleSearchSubmit = (query: string): void => {
     if (savedQuery === query) {
@@ -58,7 +56,7 @@ export function GamesDiscoveryWidget(): ReactNode {
       </div>
 
       <AsyncStateRenderer
-        isLoading={isLoading || isFetching}
+        isLoading={isFetching}
         error={error ? 'Failed to fetch games' : null}
         loadingText="Loading games..."
         isEmpty={games.length === 0}
