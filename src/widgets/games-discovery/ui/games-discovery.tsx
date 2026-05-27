@@ -1,57 +1,32 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
+import { SelectedFlyout } from '@/widgets/selected-flyout';
 import { ToggleSelectionCheckbox } from '@features/card-selection';
 
-import { gameMapper } from '@/entities/game';
 import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
-import { GameService, type IGameCardEntity } from '@entities/game';
 
-import { SelectedFlyout } from '@/widgets/selected-flyout/ui/selected-flyout';
+import { gameMapper, type IGameCardEntity } from '@/entities/game';
+import { useGetGamesQuery } from '@/entities/game/api/game-api';
+
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
-  const [games, setGames] = useState<IGameCardEntity[]>([]);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchGames = async (): Promise<void> => {
-      const currentQuery = savedQuery.trim();
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const { games, totalPages } = await GameService.searchGames(currentQuery, currentPage);
-        const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
-
-        setGames(mappedGames);
-        setTotalPages(totalPages);
-      } catch (error_) {
-        setError(error_ instanceof Error ? error_.message : 'Something went wrong');
-        setGames([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void fetchGames();
-  }, [savedQuery, currentPage]);
+  const { data, isLoading, isFetching, error } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
+  const games: IGameCardEntity[] = data?.games.map((game) => gameMapper.mapGameCard(game)) || [];
+  const totalPages = data?.totalPages || 0;
 
   const handleSearchSubmit = (query: string): void => {
     if (savedQuery === query) {
@@ -76,13 +51,15 @@ export function GamesDiscoveryWidget(): ReactNode {
           placeholder="Search for awesome games..."
         />
       </div>
+
       <div className={styles.sectionHeader}>
         <p className={styles.sectionTitle}>Library</p>
         <p className={styles.resultsCount}>Viewing {games.length} entities</p>
       </div>
+
       <AsyncStateRenderer
-        isLoading={isLoading}
-        error={error}
+        isLoading={isLoading || isFetching}
+        error={error ? 'Failed to fetch games' : null}
         loadingText="Loading games..."
         isEmpty={games.length === 0}
         emptyNode={<div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>}
