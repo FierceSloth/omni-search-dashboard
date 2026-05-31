@@ -15,25 +15,22 @@ interface IProps {
 
 export function RefreshButton({ className }: IProps): ReactNode {
   const dispatch = useDispatch();
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleRefresh = (): void => {
-    if (isRefreshing) return;
+    if (isAnimating) return;
 
-    setIsRefreshing(true);
+    setIsAnimating(true);
     dispatch(gameApi.util.invalidateTags([GAME_API_TAGS.GAMES, GAME_API_TAGS.GAME_DETAILS]));
-
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 500);
   };
 
   return (
     <IconButton
       className={classNames(styles.refreshButton, className, {
-        [styles.isRefreshing]: isRefreshing,
+        [styles.isRefreshing]: isAnimating,
       })}
       onClick={handleRefresh}
+      onAnimationEnd={() => setIsAnimating(false)}
       aria-label="Refresh data"
     >
       <span className={styles.iconContainer} dangerouslySetInnerHTML={{ __html: refreshIcon }} />

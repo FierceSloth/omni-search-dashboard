@@ -11,7 +11,7 @@ export interface ISearchGamesResponse {
 
 const CACHE_TTL = Number(import.meta.env.VITE_CACHE_TTL) || 60;
 const API_KEY = import.meta.env.VITE_RAWG_API_KEY as string;
-const PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 20;
 
 export const gameApi = createApi({
   reducerPath: 'gameApi',
@@ -22,21 +22,25 @@ export const gameApi = createApi({
   keepUnusedDataFor: CACHE_TTL,
 
   endpoints: (builder) => ({
-    getGames: builder.query<ISearchGamesResponse, { query: string; page?: number }>({
-      query: ({ query, page = 1 }) => ({
+    getGames: builder.query<ISearchGamesResponse, { query: string; page?: number; pageSize?: number }>({
+      query: ({ query, page = 1, pageSize = DEFAULT_PAGE_SIZE }) => ({
         url: '/games',
         params: {
           key: API_KEY,
           page,
-          page_size: PAGE_SIZE,
+          page_size: pageSize,
           search: query || undefined,
         },
       }),
 
-      transformResponse: (response: IGamesResponse): ISearchGamesResponse => ({
-        games: response.results.map((game) => gameMapper.mapGameCard(game)),
-        totalPages: Math.ceil(response.count / PAGE_SIZE),
-      }),
+      transformResponse: (response: IGamesResponse, _meta, argument): ISearchGamesResponse => {
+        const currentPageSize = argument.pageSize || DEFAULT_PAGE_SIZE;
+
+        return {
+          games: response.results.map((game) => gameMapper.mapGameCard(game)),
+          totalPages: Math.ceil(response.count / currentPageSize),
+        };
+      },
 
       providesTags: [GAME_API_TAGS.GAMES],
     }),
