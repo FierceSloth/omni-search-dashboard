@@ -36,11 +36,11 @@
   }
 
   :global(svg) {
-    animation: imbaSmoothSpin 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: smoothSpin 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 }
 
-@keyframes imbaSmoothSpin {
+@keyframes smoothSpin {
   100% {
     transform: rotate(360deg);
   }

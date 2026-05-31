@@ -1,16 +1,22 @@
+import type { IconType } from '@/shared/types/icon';
 import classNames from 'classnames';
 import { type ButtonHTMLAttributes, type ReactNode } from 'react';
 import styles from './icon-button.module.scss';
 
 interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  children: ReactNode;
+  icon: IconType;
+  iconContainerClassName?: string;
 }
 
-export function IconButton({ children, className, ...rest }: IProps): ReactNode {
+export function IconButton({ icon: Icon, iconContainerClassName, className, ...rest }: IProps): ReactNode {
   return (
     <button className={classNames(styles.iconButton, className)} {...rest}>
-      <div className={styles.iconWrapper}>{children}</div>
+      <div className={styles.iconWrapper}>
+        <span className={iconContainerClassName}>
+          <Icon />
+        </span>
+      </div>
     </button>
   );
 }

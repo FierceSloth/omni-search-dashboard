@@ -6,7 +6,7 @@ import { GAME_API_TAGS } from '@/entities/game';
 import { gameApi } from '@/entities/game/api/game-api';
 import { IconButton } from '@/shared/ui/icon-button';
 
-import refreshIcon from '@shared/assets/svg/refresh-icon.svg?raw';
+import RefreshIcon from '@shared/assets/svg/refresh-icon.svg?react';
 import styles from './refresh-button.module.scss';
 
 interface IProps {
@@ -32,8 +32,8 @@ export function RefreshButton({ className }: IProps): ReactNode {
       onClick={handleRefresh}
       onAnimationEnd={() => setIsAnimating(false)}
       aria-label="Refresh data"
-    >
-      <span className={styles.iconContainer} dangerouslySetInnerHTML={{ __html: refreshIcon }} />
-    </IconButton>
+      icon={RefreshIcon}
+      iconContainerClassName={styles.iconContainer}
+    />
   );
 }

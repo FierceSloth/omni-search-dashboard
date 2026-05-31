@@ -1,13 +1,15 @@
 import classNames from 'classnames';
 import { type InputHTMLAttributes, type ReactNode, useState } from 'react';
 
-import searchIcon from '@shared/assets/svg/search-icon.svg?raw';
+import type { IconType } from '@/shared/types/icon';
+import SearchIcon from '@shared/assets/svg/search-icon.svg?react';
+
 import styles from './search-form.module.scss';
 
 interface IProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onSubmit' | 'onChange' | 'value'> {
   className?: string;
   withIcon?: boolean;
-  icon?: string;
+  icon?: IconType;
   defaultValue?: string;
   onSearch: (query: string) => void;
 }
@@ -15,7 +17,7 @@ interface IProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onSubmit' 
 export function SearchForm({
   className,
   withIcon = true,
-  icon = searchIcon,
+  icon: Icon = SearchIcon,
   defaultValue = '',
   onSearch,
   ...rest
@@ -30,12 +32,9 @@ export function SearchForm({
   return (
     <form className={classNames(styles.form, className)} onSubmit={handleInternalSubmit}>
       {withIcon && (
-        <button
-          type="submit"
-          className={styles.button}
-          dangerouslySetInnerHTML={{ __html: icon }}
-          aria-label="Submit search"
-        />
+        <button type="submit" className={styles.button} aria-label="Submit search">
+          <Icon className={styles.icon} />
+        </button>
       )}
       <input
         className={styles.input}

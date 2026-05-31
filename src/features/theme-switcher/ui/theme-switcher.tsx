@@ -3,8 +3,8 @@ import { IconButton } from '@/shared/ui/icon-button';
 import classNames from 'classnames';
 import { type ReactNode } from 'react';
 
-import moonIcon from '@shared/assets/svg/moon-icon.svg?raw';
-import sunIcon from '@shared/assets/svg/sun-icon.svg?raw';
+import MoonIcon from '@shared/assets/svg/moon-icon.svg?react';
+import SunIcon from '@shared/assets/svg/sun-icon.svg?react';
 
 import styles from './theme-switcher.module.scss';
 
@@ -23,8 +23,8 @@ export function ThemeSwitcher({ className }: IProps): ReactNode {
       })}
       onClick={toggleTheme}
       aria-label="Toggle theme"
-    >
-      <span className={styles.iconContainer} dangerouslySetInnerHTML={{ __html: isDark ? moonIcon : sunIcon }} />
-    </IconButton>
+      icon={isDark ? MoonIcon : SunIcon}
+      iconContainerClassName={styles.iconContainer}
+    />
   );
 }
