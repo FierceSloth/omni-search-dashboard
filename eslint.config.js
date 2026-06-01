@@ -105,5 +105,16 @@ export default tseslint.config(
       'unicorn/no-array-for-each': 'off',
       'unicorn/error-message': 'off',
     },
+  },
+  {
+    files: ['**/msw/**/*.ts', '**/*.test.tsx', '**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   }
 );
