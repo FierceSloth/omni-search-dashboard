@@ -9,13 +9,14 @@ import globals from 'globals';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
+import nextPlugin from '@next/eslint-plugin-next';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'vite.config.ts'],
+    ignores: ['dist', 'vite.config.ts', 'coverage', '.next', 'next-env.d.ts'],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -24,7 +25,7 @@ export default tseslint.config(
       globals: { ...globals.browser, ...globals.node },
       parser: tseslint.parser,
       parserOptions: {
-        project: ['./tsconfig.app.json', './tsconfig.node.json'],
+        project: ['./tsconfig.json'],
         tsconfigRootDir: __dirname,
       },
     },
@@ -34,6 +35,7 @@ export default tseslint.config(
       unicorn,
       prettier,
       react: reactPlugin,
+      '@next/next': nextPlugin,
     },
     settings: {
       react: {
@@ -46,6 +48,8 @@ export default tseslint.config(
       ...prettierConfig.rules,
       ...reactPlugin.configs.recommended.rules,
       ...reactPlugin.configs['jsx-runtime'].rules,
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
 
       'unicorn/filename-case': [
         'error',
