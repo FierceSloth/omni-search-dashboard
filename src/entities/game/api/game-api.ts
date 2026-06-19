@@ -9,8 +9,8 @@ export interface ISearchGamesResponse {
   totalPages: number;
 }
 
-const CACHE_TTL = Number(import.meta.env.VITE_CACHE_TTL) || 60;
-const API_KEY = import.meta.env.VITE_RAWG_API_KEY as string;
+const CACHE_TTL = Number(process.env.NEXT_PUBLIC_CACHE_TTL) || 60;
+const API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string;
 const DEFAULT_PAGE_SIZE = 20;
 
 export const gameApi = createApi({
