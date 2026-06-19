@@ -34,6 +34,13 @@
       "@pages/*": ["./src/pages/*"]
     }
   },
-  "include": ["src", ".next/types/**/*.ts", "next-env.d.ts", ".next/dev/types/**/*.ts"],
+  "include": [
+    "src",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    ".next/dev/types/**/*.ts",
+    "app/page.tsx",
+    "app/layout.tsx"
+  ],
   "exclude": ["node_modules"]
 }

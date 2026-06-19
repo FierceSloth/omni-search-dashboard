@@ -1,6 +1,6 @@
-import { StoreProvider } from '@/app/_providers/store.provider';
+import { StoreProvider } from '@/app/providers/store.provider';
 import { ThemeProvider } from '@/shared/lib/context/theme';
-import '@app/_styles/style.scss';
+import '@app/styles/style.scss';
 import type { ReactNode } from 'react';
 
 export default function RootLayout({ children }: { children: React.ReactNode }): ReactNode {

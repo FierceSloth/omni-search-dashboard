@@ -1,1 +1,1 @@
-export { App } from './_ui/app';
+export { App } from './ui/app';
