@@ -12,7 +12,7 @@ interface IToggleSelectedReturn {
   payload: IGameCardEntity;
 }
 
-vi.mock('@app/store', () => ({
+vi.mock('@app/_store', () => ({
   useAppDispatch: (): Mock => mockDispatch,
   useAppSelector: (): boolean => mockIsSelected,
   selectIsCardSelectedById: vi.fn(),

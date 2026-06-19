@@ -13,7 +13,7 @@
     ]
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "prepare": "husky",
