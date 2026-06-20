@@ -13,7 +13,7 @@ interface IClearAllSelectedReturn {
   type: string;
 }
 
-vi.mock('@/app/store', () => {
+vi.mock('@/app/_store', () => {
   const mockSelectSelectedCards = vi.fn();
   const mockSelectSelectedCardsCount = vi.fn();
 

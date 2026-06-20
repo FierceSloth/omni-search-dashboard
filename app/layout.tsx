@@ -1,16 +1,7 @@
-import { StoreProvider } from '@/app/providers/store.provider';
-import { ThemeProvider } from '@/shared/lib/context/theme';
-import '@app/styles/style.scss';
 import type { ReactNode } from 'react';
 
+import '../src/app/styles/style.scss';
+
 export default function RootLayout({ children }: { children: React.ReactNode }): ReactNode {
-  return (
-    <html lang="en">
-      <body>
-        <StoreProvider>
-          <ThemeProvider>{children}</ThemeProvider>
-        </StoreProvider>
-      </body>
-    </html>
-  );
+  return children;
 }

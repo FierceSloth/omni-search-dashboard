@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./src/shared/config/i18n/request.ts');
+
 const nextConfig = {
   reactStrictMode: true,
   webpack(config) {
@@ -14,7 +18,7 @@ const nextConfig = {
       {
         ...fileLoaderRule,
         test: /\.svg$/i,
-        resourceQuery: { not: [/react/] }
+        resourceQuery: { not: [/react/] },
       }
     );
     fileLoaderRule.exclude = /\.svg$/i;
@@ -22,4 +26,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

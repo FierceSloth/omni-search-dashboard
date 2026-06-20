@@ -26,6 +26,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@/messages/*": ["./messages/*"],
       "@app/*": ["./src/app/*"],
       "@shared/*": ["./src/shared/*"],
       "@entities/*": ["./src/entities/*"],
@@ -34,13 +35,6 @@
       "@pages/*": ["./src/pages/*"]
     }
   },
-  "include": [
-    "src",
-    ".next/types/**/*.ts",
-    "next-env.d.ts",
-    ".next/dev/types/**/*.ts",
-    "app/page.tsx",
-    "app/layout.tsx"
-  ],
+  "include": ["src", "app/**/*", ".next/types/**/*.ts", "next-env.d.ts", ".next/dev/types/**/*.ts", "proxy.ts"],
   "exclude": ["node_modules"]
 }
