@@ -22,7 +22,13 @@ export function SearchForm({
   onSearch,
   ...rest
 }: IProps): ReactNode {
+  const [previousDefault, setPreviousDefault] = useState(defaultValue);
   const [localValue, setLocalValue] = useState(defaultValue);
+
+  if (defaultValue !== previousDefault) {
+    setPreviousDefault(defaultValue);
+    setLocalValue(defaultValue);
+  }
 
   const handleInternalSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();

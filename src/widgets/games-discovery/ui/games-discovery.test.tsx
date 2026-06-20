@@ -18,6 +18,13 @@ vi.mock('@/widgets/selected-flyout/ui/selected-flyout', () => ({
   SelectedFlyout: (): ReactNode => <div data-testid="mock-flyout" />,
 }));
 
+vi.mock('next/navigation', () => ({
+  useRouter: (): { push: Mock } => ({
+    push: vi.fn(),
+  }),
+  useSearchParams: (): URLSearchParams => new URLSearchParams(''),
+}));
+
 describe('GamesDiscoveryWidget', () => {
   let setItemSpy: Mock;
   let getItemSpy: Mock;

@@ -13,7 +13,7 @@ interface IClearAllSelectedReturn {
   type: string;
 }
 
-vi.mock('@/app/_store', () => {
+vi.mock('@/app/store', () => {
   const mockSelectSelectedCards = vi.fn();
   const mockSelectSelectedCardsCount = vi.fn();
 
@@ -99,7 +99,7 @@ describe('SelectedFlyout', () => {
     const downloadButton = screen.getByRole('button', { name: /download selection/i });
     await user.click(downloadButton);
 
-    const expectedUrl = `${globalThis.location.origin}/details/${mockCard.id}`;
+    const expectedUrl = `${globalThis.location.origin}/${mockCard.id}`;
     const expectedHeaders = 'ID,Title,Description,Badge,Info,URL';
     const expectedRow = `${mockCard.id},"${mockCard.title}","${mockCard.description}","${mockCard.badge}","${mockCard.info}","${expectedUrl}"`;
     const expectedCsvContent = `${expectedHeaders}\n${expectedRow}`;

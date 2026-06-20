@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { server } from '@/shared/api/msw/server';
 import { ROUTE_PATHS } from '@/shared/constants/routes';
@@ -13,13 +13,13 @@ const mockNavigate = vi.fn();
 const mockParams = { id: '3498' };
 const mockSearchParams = new URLSearchParams('search=witcher&page=2');
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+vi.mock('next/navigation', async () => {
+  const actual = await vi.importActual('next/navigation');
   return {
     ...actual,
     useParams: (): { id: string } => mockParams,
-    useNavigate: (): Mock => mockNavigate,
-    useSearchParams: (): [URLSearchParams] => [mockSearchParams],
+    useRouter: (): any => ({ push: mockNavigate }),
+    useSearchParams: (): URLSearchParams => mockSearchParams,
   };
 });
 

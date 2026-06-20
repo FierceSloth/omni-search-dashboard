@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+
 import { describe, expect, it } from 'vitest';
 import { AboutPage } from './about-page';
 
@@ -10,11 +10,7 @@ describe('AboutPage', () => {
     const githubLinkText = 'GitHub Profile →';
     const rsSchoolLinkText = 'RS School React Course';
 
-    render(
-      <MemoryRouter>
-        <AboutPage />
-      </MemoryRouter>
-    );
+    render(<AboutPage />);
 
     expect(screen.getByText(pageTitle)).toBeInTheDocument();
     expect(screen.getByText(authorName)).toBeInTheDocument();
@@ -31,11 +27,7 @@ describe('AboutPage', () => {
   it('should render all technology tags', () => {
     const techTags = ['React v19', 'TypeScript', 'FSD Architecture', 'RAWG API', 'SCSS Modules'];
 
-    render(
-      <MemoryRouter>
-        <AboutPage />
-      </MemoryRouter>
-    );
+    render(<AboutPage />);
 
     techTags.forEach((tagText) => {
       expect(screen.getByText(tagText)).toBeInTheDocument();

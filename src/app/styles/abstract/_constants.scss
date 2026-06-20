@@ -1,6 +1,6 @@
 :root {
   --font-display: 'Didot', 'Bodoni MT', 'Times New Roman', serif;
-  --font-ui: 'Manrope', sans-serif;
+  --font-ui: var(--font-manrope), sans-serif;
 
   --radius-sm: 4px;
   --radius-md: 8px;
