@@ -1,6 +1,8 @@
+'use client';
+
 import { ROUTE_PATHS } from '@/shared/constants/routes';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { type ReactNode } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardDetail } from '@/shared/ui/card-detail';
@@ -10,15 +12,16 @@ import { useGetGameByIdQuery } from '@/entities/game';
 import styles from './games-details.module.scss';
 
 export function GameDetailsWidget(): ReactNode {
-  const { id } = useParams();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  const searchParams = useSearchParams();
+  const navigate = useRouter();
 
   const { data, isFetching, isError } = useGetGameByIdQuery(Number(id));
   const details = data;
 
   const handleClose = (): void => {
-    void navigate(`${ROUTE_PATHS.HOME}?${searchParams.toString()}`);
+    void navigate.push(`${ROUTE_PATHS.HOME}?${searchParams?.toString() || ''}`);
   };
 
   return (

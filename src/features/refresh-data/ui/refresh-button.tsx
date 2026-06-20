@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames';
 import { useState, type ReactNode } from 'react';
 import { useDispatch } from 'react-redux';

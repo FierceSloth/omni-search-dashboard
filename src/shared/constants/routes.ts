@@ -6,5 +6,5 @@ export const ROUTE_PATHS = {
 } as const;
 
 export const buildDetailsPath = (id: number | string): string => {
-  return `/details/${id}`;
+  return `/${id}`;
 };

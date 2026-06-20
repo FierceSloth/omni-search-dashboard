@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { type ReactNode } from 'react';
-import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
@@ -16,11 +17,15 @@ import { useGetGamesQuery } from '@/entities/game';
 
 import styles from './games-discovery.module.scss';
 
-interface GamesEmptyStateProps {
+interface IGamesEmptyStateProps {
   searchQuery: string;
 }
 
-function GamesEmptyState({ searchQuery }: GamesEmptyStateProps): ReactNode {
+interface IDiscoveryWidgetProps {
+  children?: ReactNode;
+}
+
+function GamesEmptyState({ searchQuery }: IGamesEmptyStateProps): ReactNode {
   return (
     <div className={styles.emptyState}>
       {searchQuery ? `No games found for "${searchQuery}".` : 'No games available.'}
@@ -28,12 +33,12 @@ function GamesEmptyState({ searchQuery }: GamesEmptyStateProps): ReactNode {
   );
 }
 
-export function GamesDiscoveryWidget(): ReactNode {
+export function GamesDiscoveryWidget({ children }: IDiscoveryWidgetProps): ReactNode {
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
 
-  const [searchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const navigate = useNavigate();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams?.get('page')) || 1;
+  const navigate = useRouter();
 
   const { data, isFetching, isError } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
   const { games = [], totalPages = 0 } = data || {};
@@ -44,11 +49,11 @@ export function GamesDiscoveryWidget(): ReactNode {
     }
 
     setSavedQuery(query);
-    void navigate(`${ROUTE_PATHS.HOME}?page=1`);
+    void navigate.push(`${ROUTE_PATHS.HOME}?page=1`);
   };
 
   const handlePageChange = (page: number): void => {
-    void navigate(`${ROUTE_PATHS.HOME}?page=${page}`);
+    void navigate.push(`${ROUTE_PATHS.HOME}?page=${page}`);
   };
 
   return (
@@ -79,7 +84,7 @@ export function GamesDiscoveryWidget(): ReactNode {
             <ul className={styles.gameList}>
               {games.map((game) => (
                 <li key={game.id}>
-                  <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                  <Link className={styles.link} href={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
                     <CardPreview
                       {...game}
                       actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
@@ -90,9 +95,7 @@ export function GamesDiscoveryWidget(): ReactNode {
             </ul>
           </div>
 
-          <div className={styles.detailsColumn}>
-            <Outlet />
-          </div>
+          <div className={styles.detailsColumn}>{children}</div>
         </div>
 
         <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />

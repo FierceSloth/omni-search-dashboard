@@ -1,3 +1,4 @@
+'use client';
 import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { Header } from '@/shared/ui/header';
 import { GamesDiscoveryWidget } from '@widgets/games-discovery';
@@ -5,7 +6,11 @@ import { type ReactNode } from 'react';
 
 import styles from './main-page.module.scss';
 
-export function MainPage(): ReactNode {
+interface IProps {
+  children: ReactNode;
+}
+
+export function MainPage({ children }: IProps): ReactNode {
   return (
     <div className={styles.page}>
       <Header
@@ -17,7 +22,7 @@ export function MainPage(): ReactNode {
       />
 
       <main className={styles.main}>
-        <GamesDiscoveryWidget />
+        <GamesDiscoveryWidget>{children}</GamesDiscoveryWidget>
       </main>
     </div>
   );

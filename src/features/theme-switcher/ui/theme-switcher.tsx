@@ -1,3 +1,5 @@
+'use client';
+
 import { useTheme } from '@/shared/lib/context/theme';
 import { IconButton } from '@/shared/ui/icon-button';
 import classNames from 'classnames';
