@@ -39,7 +39,7 @@ export async function GamesDiscoveryWidget({ searchParams, children }: IDiscover
   const currentPage = Number(searchParams?.page) || 1;
 
   const response = await fetch(
-    `https://api.rawg.io/api/games?key=${API_KEY}&search=${searchQuery}&page=${currentPage}&page_size=${PAGE_SIZE}`
+    `https://api.rawg.io/api/games?key=${API_KEY}&search=${encodeURIComponent(searchQuery)}&page=${currentPage}&page_size=${PAGE_SIZE}`
   );
 
   if (!response.ok) {
@@ -69,7 +69,7 @@ export async function GamesDiscoveryWidget({ searchParams, children }: IDiscover
                 <li key={game.id}>
                   <Link
                     className={styles.link}
-                    href={`${buildDetailsPath(game.id)}&page=${currentPage}${searchQuery ? `&query=${searchQuery}` : ''}`}
+                    href={`${buildDetailsPath(game.id)}&page=${currentPage}${searchQuery ? `&query=${encodeURIComponent(searchQuery)}` : ''}`}
                     scroll={false}
                   >
                     <CardPreview

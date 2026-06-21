@@ -10,7 +10,7 @@ export async function submitSearch(formData: FormData): Promise<void> {
   const locale = (formData.get('locale') as string) || 'en';
 
   redirect({
-    href: `/?query=${query}&page=1`,
+    href: `/?query=${encodeURIComponent(query)}&page=1`,
     locale: locale,
   });
 }

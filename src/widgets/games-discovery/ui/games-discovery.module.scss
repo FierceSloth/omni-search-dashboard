@@ -43,6 +43,10 @@
 
 .link {
   all: unset;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
 }
 
 .splitLayout {
@@ -75,7 +79,6 @@
   display: grid;
 
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  justify-items: center;
   gap: 24px;
 }
 
