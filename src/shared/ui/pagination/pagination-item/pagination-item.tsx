@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/shared/config/i18n/navigation';
 import type { ReactNode } from 'react';
 import styles from './pagination-item.module.scss';
 

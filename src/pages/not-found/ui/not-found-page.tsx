@@ -1,7 +1,7 @@
 import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { Button } from '@/shared/ui/button';
-import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { Link } from '@/shared/config/i18n/navigation';
 
 import RetryIcon from '@shared/assets/svg/retry-icon.svg?react';
 import styles from './not-found-page.module.scss';

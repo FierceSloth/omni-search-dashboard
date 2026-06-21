@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 import { Tag } from '@/shared/ui/tag';
 import classNames from 'classnames';
-import Link from 'next/link';
+import { Link } from '@/shared/config/i18n/navigation';
 import styles from './card-detail.module.scss';
 
 interface IProps {

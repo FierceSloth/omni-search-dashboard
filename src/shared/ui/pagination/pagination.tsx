@@ -2,9 +2,10 @@
 
 import { PaginationItem } from '@/shared/ui/pagination/pagination-item/pagination-item';
 import { formatCounter } from '@/shared/utils/format-counter.util';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 
+import { usePathname } from '@/shared/config/i18n/navigation';
 import styles from './pagination.module.scss';
 
 interface IProps {

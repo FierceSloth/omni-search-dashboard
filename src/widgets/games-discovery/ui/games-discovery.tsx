@@ -1,17 +1,17 @@
-import Link from 'next/link';
+import { Link } from '@/shared/config/i18n/navigation';
+import { buildDetailsPath } from '@/shared/constants/routes';
 import { type ReactNode } from 'react';
 
+import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 import { SelectedFlyout } from '@/widgets/selected-flyout';
 import { ToggleSelectionCheckbox } from '@features/card-selection';
 
-import { buildDetailsPath } from '@/shared/constants/routes';
-
 import type { IGamesResponse } from '@/entities/game/model/responses';
-import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
-import { gameMapper } from '../../../entities/game/lib/game-mapper';
+import { gameMapper } from '@entities/game/lib/game-mapper';
+
 import styles from './games-discovery.module.scss';
 
 const API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string;
