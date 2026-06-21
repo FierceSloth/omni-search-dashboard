@@ -1,49 +1,44 @@
-'use client';
-
-import { ROUTE_PATHS } from '@/shared/constants/routes';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { type ReactNode } from 'react';
 
-import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardDetail } from '@/shared/ui/card-detail';
 
-import { useGetGameByIdQuery } from '@/entities/game';
-
+import { gameMapper } from '@/entities/game';
+import type { IGameDetailsDTO } from '@/entities/game/model/types';
 import styles from './games-details.module.scss';
 
-export function GameDetailsWidget(): ReactNode {
-  const params = useParams<{ id: string }>();
-  const id = params?.id;
-  const searchParams = useSearchParams();
-  const navigate = useRouter();
+interface IProps {
+  searchParams: { [key: string]: string | undefined };
+}
 
-  const { data, isFetching, isError } = useGetGameByIdQuery(Number(id));
-  const details = data;
+const API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string;
 
-  const handleClose = (): void => {
-    void navigate.push(`${ROUTE_PATHS.HOME}?${searchParams?.toString() || ''}`);
-  };
+export async function GameDetailsWidget({ searchParams }: IProps): Promise<ReactNode> {
+  const gameId = Number(searchParams?.details);
+  const response = await fetch(`https://api.rawg.io/api/games/${gameId}?key=${API_KEY}`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch');
+  }
+
+  const data = (await response.json()) as IGameDetailsDTO;
+  const details = gameMapper.mapGameDetails(data);
+
+  const closeHref = `?page=${searchParams.page || '1'}${searchParams.query ? `&query=${searchParams.query}` : ''}`;
 
   return (
     <div className={styles.container}>
-      <AsyncStateRenderer
-        isLoading={isFetching}
-        error={isError ? 'Failed to fetch game details' : null}
-        loadingText="Loading game details..."
-      >
-        {details && (
-          <CardDetail
-            title={details.title}
-            subtitle={details.subtitle}
-            description={details.description}
-            imageUrl={details.imageUrl}
-            metadata={details.metadata}
-            tags={details.tags}
-            actionUrl={details.website}
-            onClose={handleClose}
-          />
-        )}
-      </AsyncStateRenderer>
+      {details && (
+        <CardDetail
+          title={details.title}
+          subtitle={details.subtitle}
+          description={details.description}
+          imageUrl={details.imageUrl}
+          metadata={details.metadata}
+          tags={details.tags}
+          actionUrl={details.website}
+          closeHref={closeHref}
+        />
+      )}
     </div>
   );
 }

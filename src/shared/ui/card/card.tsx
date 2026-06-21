@@ -1,8 +1,10 @@
+'use client';
+
 import classNames from 'classnames';
 import { type ReactNode, type SyntheticEvent } from 'react';
 
-import styles from './card.module.scss';
 import { FALLBACK_IMAGE } from '@/shared/constants/constants';
+import styles from './card.module.scss';
 
 interface IProps {
   className?: string;

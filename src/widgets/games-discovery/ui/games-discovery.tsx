@@ -1,27 +1,28 @@
-import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { type ReactNode } from 'react';
 
-import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 import { SelectedFlyout } from '@/widgets/selected-flyout';
 import { ToggleSelectionCheckbox } from '@features/card-selection';
 
-import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
-import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
+import { buildDetailsPath } from '@/shared/constants/routes';
 
-import { useGetGamesQuery } from '@/entities/game';
-
+import type { IGamesResponse } from '@/entities/game/model/responses';
+import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
+import { gameMapper } from '../../../entities/game/lib/game-mapper';
 import styles from './games-discovery.module.scss';
+
+const API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string;
+const PAGE_SIZE = 20;
 
 interface IGamesEmptyStateProps {
   searchQuery: string;
 }
 
 interface IDiscoveryWidgetProps {
+  searchParams?: { [key: string]: string | undefined };
   children?: ReactNode;
 }
 
@@ -33,38 +34,26 @@ function GamesEmptyState({ searchQuery }: IGamesEmptyStateProps): ReactNode {
   );
 }
 
-export function GamesDiscoveryWidget({ children }: IDiscoveryWidgetProps): ReactNode {
-  const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
+export async function GamesDiscoveryWidget({ searchParams, children }: IDiscoveryWidgetProps): Promise<ReactNode> {
+  const searchQuery = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
 
-  const searchParams = useSearchParams();
-  const currentPage = Number(searchParams?.get('page')) || 1;
-  const navigate = useRouter();
+  const response = await fetch(
+    `https://api.rawg.io/api/games?key=${API_KEY}&search=${searchQuery}&page=${currentPage}&page_size=${PAGE_SIZE}`
+  );
 
-  const { data, isFetching, isError } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
-  const { games = [], totalPages = 0 } = data || {};
+  if (!response.ok) {
+    throw new Error('Failed to fetch');
+  }
 
-  const handleSearchSubmit = (query: string): void => {
-    if (savedQuery === query) {
-      return;
-    }
-
-    setSavedQuery(query);
-    void navigate.push(`${ROUTE_PATHS.HOME}?page=1`);
-  };
-
-  const handlePageChange = (page: number): void => {
-    void navigate.push(`${ROUTE_PATHS.HOME}?page=${page}`);
-  };
+  const data = (await response.json()) as IGamesResponse;
+  const games = data.results.map((dto) => gameMapper.mapGameCard(dto)) || [];
+  const totalPages = Math.ceil((data.count || 0) / 20);
 
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
-        <SearchForm
-          className={styles.form}
-          onSearch={handleSearchSubmit}
-          defaultValue={savedQuery}
-          placeholder="Search for awesome games..."
-        />
+        <SearchForm className={styles.form} defaultValue={searchQuery} placeholder="Search for awesome games..." />
       </div>
 
       <div className={styles.sectionHeader}>
@@ -72,19 +61,17 @@ export function GamesDiscoveryWidget({ children }: IDiscoveryWidgetProps): React
         <p className={styles.resultsCount}>Viewing {games.length} entities</p>
       </div>
 
-      <AsyncStateRenderer
-        isLoading={isFetching}
-        error={isError ? 'Failed to fetch games' : null}
-        loadingText="Loading games..."
-        isEmpty={games.length === 0}
-        emptyNode={<GamesEmptyState searchQuery={savedQuery} />}
-      >
+      <AsyncStateRenderer isEmpty={games.length === 0} emptyNode={<GamesEmptyState searchQuery={searchQuery} />}>
         <div className={styles.splitLayout}>
           <div className={styles.listColumn}>
             <ul className={styles.gameList}>
               {games.map((game) => (
                 <li key={game.id}>
-                  <Link className={styles.link} href={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                  <Link
+                    className={styles.link}
+                    href={`${buildDetailsPath(game.id)}&page=${currentPage}${searchQuery ? `&query=${searchQuery}` : ''}`}
+                    scroll={false}
+                  >
                     <CardPreview
                       {...game}
                       actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
@@ -98,8 +85,7 @@ export function GamesDiscoveryWidget({ children }: IDiscoveryWidgetProps): React
           <div className={styles.detailsColumn}>{children}</div>
         </div>
 
-        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
-
+        <Pagination currentPage={currentPage} totalPage={totalPages} />
         <SelectedFlyout />
       </AsyncStateRenderer>
     </div>

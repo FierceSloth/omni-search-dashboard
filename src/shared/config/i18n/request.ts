@@ -3,10 +3,12 @@ import { notFound } from 'next/navigation';
 
 export const locales = ['en', 'ru'];
 
-export default getRequestConfig(async ({ locale }) => {
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = await requestLocale;
+
   if (!locale || !locales.includes(locale)) notFound();
 
-  const userMessages = (await import(`@/messages/${locale}.json`)) as {
+  const userMessages = (await import(`../../../../messages/${locale}.json`)) as {
     default: Record<string, unknown>;
   };
 

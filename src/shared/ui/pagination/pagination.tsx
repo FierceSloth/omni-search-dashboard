@@ -1,5 +1,8 @@
+'use client';
+
 import { PaginationItem } from '@/shared/ui/pagination/pagination-item/pagination-item';
 import { formatCounter } from '@/shared/utils/format-counter.util';
+import { usePathname, useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import styles from './pagination.module.scss';
@@ -7,35 +10,29 @@ import styles from './pagination.module.scss';
 interface IProps {
   currentPage: number;
   totalPage: number;
-  onPageChange: (page: number) => void;
 }
 
-export function Pagination({ currentPage, totalPage, onPageChange }: IProps): ReactNode {
+export function Pagination({ currentPage, totalPage }: IProps): ReactNode {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createPageURL = (pageNumber: number): string => {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set('page', pageNumber.toString());
+    return `${pathname}?${params.toString()}`;
+  };
+
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPage;
-
-  const onFirstPage = (): void => {
-    onPageChange(1);
-  };
-  const onPreviousPage = (): void => {
-    onPageChange(currentPage - 1);
-  };
-
-  const onNextPage = (): void => {
-    onPageChange(currentPage + 1);
-  };
-  const onLastPage = (): void => {
-    onPageChange(totalPage);
-  };
 
   return (
     <nav className={styles.container}>
       <ul className={styles.list}>
-        <PaginationItem isDisabled={isFirstPage} onClick={onFirstPage}>
+        <PaginationItem isDisabled={isFirstPage} href={createPageURL(1)}>
           {'<<'}
         </PaginationItem>
 
-        <PaginationItem isDisabled={isFirstPage} onClick={onPreviousPage}>
+        <PaginationItem isDisabled={isFirstPage} href={createPageURL(currentPage - 1)}>
           {'<'}
         </PaginationItem>
 
@@ -43,11 +40,11 @@ export function Pagination({ currentPage, totalPage, onPageChange }: IProps): Re
           <p className={styles.counter}>{formatCounter(currentPage, totalPage)}</p>
         </li>
 
-        <PaginationItem isDisabled={isLastPage} onClick={onNextPage}>
+        <PaginationItem isDisabled={isLastPage} href={createPageURL(currentPage + 1)}>
           {'>'}
         </PaginationItem>
 
-        <PaginationItem isDisabled={isLastPage} onClick={onLastPage}>
+        <PaginationItem isDisabled={isLastPage} href={createPageURL(totalPage)}>
           {'>>'}
         </PaginationItem>
       </ul>

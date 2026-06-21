@@ -9,7 +9,12 @@ const handleI18nRouting = createMiddleware({
 export default function proxy(request: NextRequest): NextResponse<unknown> {
   const pathname = request.nextUrl.pathname;
 
-  if (pathname.startsWith('/_next') || pathname.startsWith('/api') || /\.(.*)$/.test(pathname)) {
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    /\.(.*)$/.test(pathname) ||
+    request.headers.has('Next-Action')
+  ) {
     return NextResponse.next();
   }
 

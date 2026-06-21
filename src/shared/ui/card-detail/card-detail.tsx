@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import { Tag } from '@/shared/ui/tag';
 import classNames from 'classnames';
+import Link from 'next/link';
 import styles from './card-detail.module.scss';
 
 interface IProps {
@@ -15,7 +16,7 @@ interface IProps {
   tags?: string[];
   actionUrl?: string;
   actionLabel?: string;
-  onClose: () => void;
+  closeHref: string;
 }
 
 export function CardDetail({
@@ -28,13 +29,13 @@ export function CardDetail({
   tags,
   actionUrl,
   actionLabel = 'Official Website',
-  onClose,
+  closeHref,
 }: IProps): ReactNode {
   return (
     <Card className={classNames(className, styles.card)} imageUrl={imageUrl}>
-      <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close details">
+      <Link className={styles.closeButton} href={closeHref} scroll={false} aria-label="Close details">
         ✕
-      </button>
+      </Link>
 
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
