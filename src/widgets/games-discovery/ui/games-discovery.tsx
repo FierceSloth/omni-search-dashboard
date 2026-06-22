@@ -1,5 +1,7 @@
 import { Link } from '@/shared/config/i18n/navigation';
 import { buildDetailsPath } from '@/shared/constants/routes';
+import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { type ReactNode } from 'react';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
@@ -27,14 +29,16 @@ interface IDiscoveryWidgetProps {
 }
 
 function GamesEmptyState({ searchQuery }: IGamesEmptyStateProps): ReactNode {
+  const t = useTranslations('GamesDiscovery');
   return (
     <div className={styles.emptyState}>
-      {searchQuery ? `No games found for "${searchQuery}".` : 'No games available.'}
+      {searchQuery ? t('noGamesForQuery', { searchQuery }) : t('noGamesAvailable')}
     </div>
   );
 }
 
 export async function GamesDiscoveryWidget({ searchParams, children }: IDiscoveryWidgetProps): Promise<ReactNode> {
+  const t = await getTranslations('GamesDiscovery');
   const searchQuery = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
@@ -53,12 +57,12 @@ export async function GamesDiscoveryWidget({ searchParams, children }: IDiscover
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
-        <SearchForm className={styles.form} defaultValue={searchQuery} placeholder="Search for awesome games..." />
+        <SearchForm className={styles.form} defaultValue={searchQuery} placeholder={t('placeholder')} />
       </div>
 
       <div className={styles.sectionHeader}>
-        <p className={styles.sectionTitle}>Library</p>
-        <p className={styles.resultsCount}>Viewing {games.length} entities</p>
+        <p className={styles.sectionTitle}>{t('library')}</p>
+        <p className={styles.resultsCount}>{t('viewingEntities', { count: games.length })}</p>
       </div>
 
       <AsyncStateRenderer isEmpty={games.length === 0} emptyNode={<GamesEmptyState searchQuery={searchQuery} />}>

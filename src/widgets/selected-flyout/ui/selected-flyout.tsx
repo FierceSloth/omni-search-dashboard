@@ -1,7 +1,7 @@
 'use client';
 
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import {
   clearAllSelected,
@@ -12,6 +12,7 @@ import {
 } from '@/app/store';
 import { buildDetailsPath } from '@/shared/constants/routes';
 import { downloadCsv, escapeCsv } from '@/shared/utils/download-csv.util';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/shared/ui/button';
 
@@ -24,6 +25,7 @@ interface IProps {
 const HEADERS = ['ID', 'Title', 'Description', 'Badge', 'Info', 'URL'];
 
 export function SelectedFlyout({ className }: IProps): ReactNode {
+  const t = useTranslations('SelectedFlyout');
   const dispatch = useAppDispatch();
 
   const selectedCards = useAppSelector(selectSelectedCards);
@@ -60,16 +62,16 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
       <div className={styles.flyout}>
         <div className={styles.info}>
           <div className={styles.badge}>{selectedCount}</div>
-          <span className={styles.text}>{selectedCount === 1 ? 'Item selected' : 'Items selected'}</span>
+          <span className={styles.text}>{t('itemSelected', { count: selectedCount })}</span>
         </div>
 
         <div className={styles.actions}>
           <Button variant="ghost" type="button" onClick={handleClearClick} aria-label="Clear selection">
-            Clear
+            {t('clear')}
           </Button>
 
           <Button variant="primary" type="button" onClick={handleDownloadClick} aria-label="Download selection">
-            Download
+            {t('download')}
           </Button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { GamesDiscoveryWidget } from '@widgets/games-discovery';
 import type { ReactNode } from 'react';
 
 import styles from './main-page.module.scss';
+import { useTranslations } from 'next-intl';
 
 export function MainPage({
   searchParams,
@@ -12,14 +13,16 @@ export function MainPage({
   searchParams: { [key: string]: string | undefined };
   children?: ReactNode;
 }): ReactNode {
+  const t = useTranslations('MainPage');
+
   return (
     <div className={styles.page}>
       <Header
         className={styles.headerWrapper}
-        title="Omni Search Dashboard"
-        subtitle="DIGITAL LIBRARY & GAME INSIGHTS"
+        title={t('title')}
+        subtitle={t('subtitle')}
         linkTo={ROUTE_PATHS.ABOUT}
-        linkText="About Project →"
+        linkText={t('aboutLink')}
       />
 
       <main className={styles.main}>

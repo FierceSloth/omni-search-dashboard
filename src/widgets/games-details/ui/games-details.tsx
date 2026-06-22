@@ -4,6 +4,7 @@ import { CardDetail } from '@/shared/ui/card-detail';
 
 import { gameMapper } from '@/entities/game';
 import type { IGameDetailsDTO } from '@/entities/game/model/types';
+
 import styles from './games-details.module.scss';
 
 interface IProps {

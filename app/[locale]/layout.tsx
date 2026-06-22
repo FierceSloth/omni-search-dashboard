@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { RefreshButton } from '@/features/refresh-data';
 import { ThemeSwitcher } from '@/features/theme-switcher';
+import { LanguageSwitcher } from '@/features/language-switcher';
 import { StoreProvider } from '@app/providers/store.provider';
 import { ThemeProvider } from '@shared/lib/context/theme';
 
@@ -20,6 +21,7 @@ export default async function LocaleLayout({ children }: { children: ReactNode }
 
           <div className={styles.toolbar}>
             <ThemeSwitcher />
+            <LanguageSwitcher />
             <RefreshButton />
           </div>
 
