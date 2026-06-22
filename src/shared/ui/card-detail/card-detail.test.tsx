@@ -1,33 +1,22 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { screen } from '@testing-library/react';
+import { renderWithProviders as render } from '@/shared/lib/test-utils/render-with-providers';
+import { describe, expect, it } from 'vitest';
 import { CardDetail } from './card-detail';
 
 describe('CardDetail Component', () => {
   const defaultProps = {
     title: 'Grand Theft Auto V',
-    onClose: vi.fn(),
+    closeHref: '/dashboard',
   };
 
-  it('should render the required title and close button', () => {
+  it('should render the required title and close link', () => {
     render(<CardDetail {...defaultProps} />);
 
     expect(screen.getByRole('heading', { level: 2, name: defaultProps.title })).toBeInTheDocument();
 
-    const closeButton = screen.getByRole('button', { name: /close details/i });
-    expect(closeButton).toBeInTheDocument();
-  });
-
-  it('should call onClose callback when close button is clicked', async () => {
-    const user = userEvent.setup();
-    const onCloseMock = vi.fn();
-
-    render(<CardDetail {...defaultProps} onClose={onCloseMock} />);
-
-    const closeButton = screen.getByRole('button', { name: /close details/i });
-    await user.click(closeButton);
-
-    expect(onCloseMock).toHaveBeenCalledOnce();
+    const closeLink = screen.getByRole('link', { name: /close details/i });
+    expect(closeLink).toBeInTheDocument();
+    expect(closeLink).toHaveAttribute('href', `/en${defaultProps.closeHref}`);
   });
 
   it('should render subtitle and description if provided', () => {

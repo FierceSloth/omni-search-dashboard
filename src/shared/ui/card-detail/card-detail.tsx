@@ -1,8 +1,10 @@
 import { Card } from '@/shared/ui/card/card';
 import type { ReactNode } from 'react';
 
+import { Link } from '@/shared/config/i18n/navigation';
 import { Tag } from '@/shared/ui/tag';
 import classNames from 'classnames';
+import { useTranslations } from 'next-intl';
 import styles from './card-detail.module.scss';
 
 interface IProps {
@@ -15,7 +17,7 @@ interface IProps {
   tags?: string[];
   actionUrl?: string;
   actionLabel?: string;
-  onClose: () => void;
+  closeHref: string;
 }
 
 export function CardDetail({
@@ -27,14 +29,16 @@ export function CardDetail({
   metadata,
   tags,
   actionUrl,
-  actionLabel = 'Official Website',
-  onClose,
+  actionLabel,
+  closeHref,
 }: IProps): ReactNode {
+  const t = useTranslations('CardDetail');
+
   return (
     <Card className={classNames(className, styles.card)} imageUrl={imageUrl}>
-      <button className={styles.closeButton} onClick={onClose} type="button" aria-label="Close details">
+      <Link className={styles.closeButton} href={closeHref} scroll={false} aria-label="Close details">
         ✕
-      </button>
+      </Link>
 
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
@@ -67,7 +71,7 @@ export function CardDetail({
 
       {actionUrl && (
         <a href={actionUrl} target="_blank" rel="noreferrer" className={styles.actionLink}>
-          {actionLabel}
+          {actionLabel || t('actionLabel')}
         </a>
       )}
     </Card>

@@ -1,5 +1,5 @@
 import type { IGameCardEntity } from '@/entities/game';
-import type { RootState } from '@app/store';
+import type { RootState } from '../store';
 import { createSelector } from '@reduxjs/toolkit';
 import type { Selector } from 'react-redux';
 

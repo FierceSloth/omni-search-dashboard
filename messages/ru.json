@@ -1,0 +1,42 @@
+{
+  "MainPage": {
+    "title": "Omni Search Dashboard",
+    "subtitle": "ЦИФРОВАЯ БИБЛИОТЕКА И ИГРОВАЯ АНАЛИТИКА",
+    "aboutLink": "О проекте →"
+  },
+  "AboutPage": {
+    "title": "О проекте Omni Search Dashboard",
+    "subtitle": "ДОКУМЕНТАЦИЯ И ВИДЕНИЕ ПРОЕКТА",
+    "backLink": "← В БИБЛИОТЕКУ",
+    "section1Label": "Приложение",
+    "section1Title": "Одностраничное приложение для энтузиастов видеоигр",
+    "section1Text": "Omni Search Dashboard — это продвинутое SPA-приложение, тщательно созданное для поиска и исследования видеоигр. Используя мощный RAWG API, оно обеспечивает доступ в реальном времени к огромной базе игр, жанров и издателей через производительный и элегантный интерфейс.",
+    "section2Label": "Архитектура",
+    "section2Title": "Feature-Sliced Design",
+    "section2Text": "Код организован в соответствии с методологией Feature-Sliced Design (FSD). Этот архитектурный паттерн обеспечивает масштабируемость и простоту поддержки благодаря разделению приложения на независимые слои, слайсы и сегменты.",
+    "section3Label": "Создатель",
+    "githubLink": "Профиль GitHub →",
+    "builtWith": "Разработано в рамках курса ",
+    "courseLink": "RS School React Course"
+  },
+  "GamesDiscovery": {
+    "noGamesForQuery": "Игры по запросу \"{searchQuery}\" не найдены.",
+    "noGamesAvailable": "Игры недоступны.",
+    "placeholder": "Поиск потрясающих игр...",
+    "library": "Библиотека",
+    "viewingEntities": "Отображается объектов: {count}"
+  },
+  "CardDetail": {
+    "actionLabel": "Официальный сайт"
+  },
+  "SelectedFlyout": {
+    "itemSelected": "{count, plural, one {Выбран # элемент} few {Выбрано # элемента} many {Выбрано # элементов} other {Выбрано # элементов}}",
+    "clear": "Очистить",
+    "download": "Скачать"
+  },
+  "NotFoundPage": {
+    "pageNotFound": "Страница не найдена",
+    "description": "Путь, который вы искали, растворился в эфире. Вернитесь назад или найдите новое место назначения.",
+    "returnHome": "Вернуться на главную"
+  }
+}

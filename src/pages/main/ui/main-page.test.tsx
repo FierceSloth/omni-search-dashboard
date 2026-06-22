@@ -10,9 +10,16 @@ vi.mock('@shared/ui/header', () => ({
   Header: (): ReactNode => <div data-testid="mock-header" />,
 }));
 
+import { NextIntlClientProvider } from 'next-intl';
+import messages from '../../../../messages/en.json';
+
 describe('MainPage Component', () => {
   it('should render the page layout correctly', () => {
-    render(<MainPage />);
+    render(
+      <NextIntlClientProvider messages={messages} locale="en">
+        <MainPage />
+      </NextIntlClientProvider>
+    );
 
     const headerElement = screen.getByTestId('mock-header');
     const widgetMock = screen.getByTestId('mock-games-discovery');

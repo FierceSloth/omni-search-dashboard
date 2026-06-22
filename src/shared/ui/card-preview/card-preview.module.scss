@@ -1,5 +1,8 @@
 .card {
   max-width: 350px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
 
   &:hover {
     border-color: var(--border-highlight);

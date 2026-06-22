@@ -1,5 +1,6 @@
 .gameCard {
   width: 100%;
+  height: 100%;
   background: var(--surface-1);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -15,6 +16,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  position: relative;
 }
 
 .image {

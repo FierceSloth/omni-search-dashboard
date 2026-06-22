@@ -13,9 +13,9 @@
     ]
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "next dev --webpack",
+    "build": "next build",
+    "start": "next start",
     "prepare": "husky",
     "format": "prettier --write src",
     "ci:format": "prettier --check src",
@@ -28,15 +28,18 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "classnames": "^2.5.1",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-redux": "^9.3.0",
-    "react-router-dom": "^7.15.1"
+    "next": "^16.2.9",
+    "next-intl": "^4.13.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-redux": "^9.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.2",
     "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^9.39.4",
+    "@next/eslint-plugin-next": "^16.2.9",
+    "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -65,7 +68,6 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10",
-    "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.5"
   }
 }

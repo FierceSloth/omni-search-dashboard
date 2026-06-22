@@ -3,8 +3,8 @@ import { Loader } from '@/shared/ui/loader';
 import type { ReactNode } from 'react';
 
 interface IProps {
-  isLoading: boolean;
-  error: string | null;
+  isLoading?: boolean;
+  error?: string | null;
   isEmpty?: boolean;
   emptyNode?: ReactNode;
   loadingText?: string;
@@ -12,8 +12,8 @@ interface IProps {
 }
 
 export function AsyncStateRenderer({
-  isLoading,
-  error,
+  isLoading = false,
+  error = null,
   isEmpty = false,
   emptyNode = null,
   loadingText = 'Loading...',

@@ -1,9 +1,9 @@
+'use client';
+
 import classNames from 'classnames';
 import { useState, type ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
-import { GAME_API_TAGS } from '@/entities/game';
-import { gameApi } from '@/entities/game/api/game-api';
 import { IconButton } from '@/shared/ui/icon-button';
 
 import RefreshIcon from '@shared/assets/svg/refresh-icon.svg?react';
@@ -14,14 +14,14 @@ interface IProps {
 }
 
 export function RefreshButton({ className }: IProps): ReactNode {
-  const dispatch = useDispatch();
+  const router = useRouter();
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleRefresh = (): void => {
     if (isAnimating) return;
 
     setIsAnimating(true);
-    dispatch(gameApi.util.invalidateTags([GAME_API_TAGS.GAMES, GAME_API_TAGS.GAME_DETAILS]));
+    router.refresh();
   };
 
   return (

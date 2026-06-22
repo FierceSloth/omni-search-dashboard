@@ -1,7 +1,6 @@
 /// <reference types="vitest" />
 
 import react from '@vitejs/plugin-react';
-import svgr from 'vite-plugin-svgr';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
@@ -12,9 +11,15 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   plugins: [
     react(),
-    svgr({
-      include: '**/*.svg?react',
-    }),
+    {
+      name: 'svg-mock',
+      enforce: 'pre',
+      load(id) {
+        if (id.endsWith('.svg') || id.endsWith('.svg?react')) {
+          return 'export default function SvgMock() { return null; }';
+        }
+      },
+    },
   ],
   resolve: {
     alias: {
@@ -25,6 +30,7 @@ export default defineConfig({
       '@features': path.resolve(__dirname, './src/features'),
       '@widgets': path.resolve(__dirname, './src/widgets'),
       '@pages': path.resolve(__dirname, './src/pages'),
+      'next/navigation': path.resolve(__dirname, './src/__mocks__/next-navigation.ts'),
     },
   },
 
@@ -32,6 +38,11 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/setup-tests.ts'],
+    server: {
+      deps: {
+        inline: ['next-intl'],
+      },
+    },
     coverage: {
       reporter: ['text', 'html', 'text-summary'],
       provider: 'v8',

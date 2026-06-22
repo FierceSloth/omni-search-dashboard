@@ -1,6 +1,8 @@
-import { STORAGE_KEYS } from '@/shared/constants/local-storage';
+import { Link } from '@/shared/config/i18n/navigation';
+import { buildDetailsPath } from '@/shared/constants/routes';
+import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { type ReactNode } from 'react';
-import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
@@ -9,77 +11,71 @@ import { SearchForm } from '@/shared/ui/search-form';
 import { SelectedFlyout } from '@/widgets/selected-flyout';
 import { ToggleSelectionCheckbox } from '@features/card-selection';
 
-import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
-import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
-
-import { useGetGamesQuery } from '@/entities/game';
+import type { IGamesResponse } from '@/entities/game/model/responses';
+import { gameMapper } from '@entities/game/lib/game-mapper';
 
 import styles from './games-discovery.module.scss';
 
-interface GamesEmptyStateProps {
+const API_KEY = process.env.NEXT_PUBLIC_RAWG_API_KEY as string;
+const PAGE_SIZE = 20;
+
+interface IGamesEmptyStateProps {
   searchQuery: string;
 }
 
-function GamesEmptyState({ searchQuery }: GamesEmptyStateProps): ReactNode {
+interface IDiscoveryWidgetProps {
+  searchParams?: { [key: string]: string | undefined };
+  children?: ReactNode;
+}
+
+function GamesEmptyState({ searchQuery }: IGamesEmptyStateProps): ReactNode {
+  const t = useTranslations('GamesDiscovery');
   return (
     <div className={styles.emptyState}>
-      {searchQuery ? `No games found for "${searchQuery}".` : 'No games available.'}
+      {searchQuery ? t('noGamesForQuery', { searchQuery }) : t('noGamesAvailable')}
     </div>
   );
 }
 
-export function GamesDiscoveryWidget(): ReactNode {
-  const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
+export async function GamesDiscoveryWidget({ searchParams, children }: IDiscoveryWidgetProps): Promise<ReactNode> {
+  const t = await getTranslations('GamesDiscovery');
+  const searchQuery = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
 
-  const [searchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
-  const navigate = useNavigate();
+  const response = await fetch(
+    `https://api.rawg.io/api/games?key=${API_KEY}&search=${encodeURIComponent(searchQuery)}&page=${currentPage}&page_size=${PAGE_SIZE}`
+  );
 
-  const { data, isFetching, isError } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
-  const { games = [], totalPages = 0 } = data || {};
+  if (!response.ok) {
+    throw new Error('Failed to fetch');
+  }
 
-  const handleSearchSubmit = (query: string): void => {
-    if (savedQuery === query) {
-      return;
-    }
-
-    setSavedQuery(query);
-    void navigate(`${ROUTE_PATHS.HOME}?page=1`);
-  };
-
-  const handlePageChange = (page: number): void => {
-    void navigate(`${ROUTE_PATHS.HOME}?page=${page}`);
-  };
+  const data = (await response.json()) as IGamesResponse;
+  const games = data.results.map((dto) => gameMapper.mapGameCard(dto)) || [];
+  const totalPages = Math.ceil((data.count || 0) / 20);
 
   return (
     <div className={styles.container}>
       <div className={styles.formWrapper}>
-        <SearchForm
-          className={styles.form}
-          onSearch={handleSearchSubmit}
-          defaultValue={savedQuery}
-          placeholder="Search for awesome games..."
-        />
+        <SearchForm className={styles.form} defaultValue={searchQuery} placeholder={t('placeholder')} />
       </div>
 
       <div className={styles.sectionHeader}>
-        <p className={styles.sectionTitle}>Library</p>
-        <p className={styles.resultsCount}>Viewing {games.length} entities</p>
+        <p className={styles.sectionTitle}>{t('library')}</p>
+        <p className={styles.resultsCount}>{t('viewingEntities', { count: games.length })}</p>
       </div>
 
-      <AsyncStateRenderer
-        isLoading={isFetching}
-        error={isError ? 'Failed to fetch games' : null}
-        loadingText="Loading games..."
-        isEmpty={games.length === 0}
-        emptyNode={<GamesEmptyState searchQuery={savedQuery} />}
-      >
+      <AsyncStateRenderer isEmpty={games.length === 0} emptyNode={<GamesEmptyState searchQuery={searchQuery} />}>
         <div className={styles.splitLayout}>
           <div className={styles.listColumn}>
             <ul className={styles.gameList}>
               {games.map((game) => (
                 <li key={game.id}>
-                  <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                  <Link
+                    className={styles.link}
+                    href={`${buildDetailsPath(game.id)}&page=${currentPage}${searchQuery ? `&query=${encodeURIComponent(searchQuery)}` : ''}`}
+                    scroll={false}
+                  >
                     <CardPreview
                       {...game}
                       actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
@@ -90,13 +86,10 @@ export function GamesDiscoveryWidget(): ReactNode {
             </ul>
           </div>
 
-          <div className={styles.detailsColumn}>
-            <Outlet />
-          </div>
+          <div className={styles.detailsColumn}>{children}</div>
         </div>
 
-        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
-
+        <Pagination currentPage={currentPage} totalPage={totalPages} />
         <SelectedFlyout />
       </AsyncStateRenderer>
     </div>

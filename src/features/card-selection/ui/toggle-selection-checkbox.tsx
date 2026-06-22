@@ -1,6 +1,8 @@
+'use client';
+
+import { selectIsCardSelectedById, toggleSelected, useAppDispatch, useAppSelector } from '@/app/store';
 import type { IGameCardEntity } from '@/entities/game';
 import { Checkbox } from '@/shared/ui/checkbox';
-import { selectIsCardSelectedById, toggleSelected, useAppDispatch, useAppSelector } from '@app/store';
 import { useMemo, type ReactNode } from 'react';
 
 interface IProps {

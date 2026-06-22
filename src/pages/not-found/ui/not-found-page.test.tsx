@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { screen } from '@testing-library/react';
+import { renderWithProviders as render } from '@/shared/lib/test-utils/render-with-providers';
+
 import { describe, expect, it } from 'vitest';
 
-import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { NotFoundPage } from './not-found-page';
 
 describe('NotFoundPage', () => {
@@ -10,11 +10,7 @@ describe('NotFoundPage', () => {
     const titleText = '404';
     const subtitleText = 'Page Not Found';
 
-    render(
-      <MemoryRouter>
-        <NotFoundPage />
-      </MemoryRouter>
-    );
+    render(<NotFoundPage />);
 
     expect(screen.getByRole('heading', { level: 1, name: titleText })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: subtitleText })).toBeInTheDocument();
@@ -23,15 +19,11 @@ describe('NotFoundPage', () => {
   it('should render a link to the home page', () => {
     const returnButtonRegex = /Return to Home/i;
 
-    render(
-      <MemoryRouter>
-        <NotFoundPage />
-      </MemoryRouter>
-    );
+    render(<NotFoundPage />);
 
     const homeLink = screen.getByRole('link', { name: returnButtonRegex });
 
     expect(homeLink).toBeInTheDocument();
-    expect(homeLink).toHaveAttribute('href', ROUTE_PATHS.HOME);
+    expect(homeLink).toHaveAttribute('href', '/en');
   });
 });

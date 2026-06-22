@@ -1,5 +1,7 @@
+'use client';
+
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import {
   clearAllSelected,
@@ -8,8 +10,9 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/app/store';
-import { buildDetailsPath } from '@/shared/constants/routes';
-import { downloadCsv, escapeCsv } from '@/shared/utils/download-csv.util';
+import { downloadCsv } from '@/shared/utils/download-csv.util';
+import { generateCsvAction } from '@/widgets/selected-flyout/actions';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/shared/ui/button';
 
@@ -19,9 +22,8 @@ interface IProps {
   className?: string;
 }
 
-const HEADERS = ['ID', 'Title', 'Description', 'Badge', 'Info', 'URL'];
-
 export function SelectedFlyout({ className }: IProps): ReactNode {
+  const t = useTranslations('SelectedFlyout');
   const dispatch = useAppDispatch();
 
   const selectedCards = useAppSelector(selectSelectedCards);
@@ -33,23 +35,10 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
     dispatch(clearAllSelected());
   };
 
-  const handleDownloadClick = (): void => {
-    const rows = selectedCards.map((card) => {
-      const detailsUrl = `${globalThis.location.origin}${buildDetailsPath(card.id)}`;
+  const handleDownloadClick = async (): Promise<void> => {
+    const csvContent = await generateCsvAction(selectedCards, globalThis.location.origin);
 
-      return [
-        card.id,
-        escapeCsv(card.title),
-        escapeCsv(card.description),
-        escapeCsv(card.badge),
-        escapeCsv(card.info),
-        escapeCsv(detailsUrl),
-      ].join(',');
-    });
-
-    const csvContent = [HEADERS.join(','), ...rows].join('\n');
     const fileName = `${selectedCount}_items.csv`;
-
     downloadCsv(fileName, csvContent);
   };
 
@@ -58,16 +47,21 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
       <div className={styles.flyout}>
         <div className={styles.info}>
           <div className={styles.badge}>{selectedCount}</div>
-          <span className={styles.text}>{selectedCount === 1 ? 'Item selected' : 'Items selected'}</span>
+          <span className={styles.text}>{t('itemSelected', { count: selectedCount })}</span>
         </div>
 
         <div className={styles.actions}>
           <Button variant="ghost" type="button" onClick={handleClearClick} aria-label="Clear selection">
-            Clear
+            {t('clear')}
           </Button>
 
-          <Button variant="primary" type="button" onClick={handleDownloadClick} aria-label="Download selection">
-            Download
+          <Button
+            variant="primary"
+            type="button"
+            onClick={() => void handleDownloadClick()}
+            aria-label="Download selection"
+          >
+            {t('download')}
           </Button>
         </div>
       </div>

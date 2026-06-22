@@ -5,6 +5,6 @@ export const ROUTE_PATHS = {
   NOT_FOUND: '*',
 } as const;
 
-export const buildDetailsPath = (id: number | string): string => {
-  return `/details/${id}`;
+export const buildDetailsPath = (id: string | number): string => {
+  return `${ROUTE_PATHS.HOME}?details=${id}`;
 };

@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { screen } from '@testing-library/react';
+import { renderWithProviders as render } from '@/shared/lib/test-utils/render-with-providers';
+import { describe, expect, it } from 'vitest';
 
 import { formatCounter } from '@/shared/utils/format-counter.util';
 import { Pagination } from './pagination';
@@ -12,7 +12,7 @@ describe('Pagination Component', () => {
     const currentPage = 5;
     const expectedText = formatCounter(currentPage, defaultTotalPages);
 
-    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} onPageChange={vi.fn()} />);
+    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} />);
 
     expect(screen.getByText(expectedText)).toBeInTheDocument();
   });
@@ -20,53 +20,48 @@ describe('Pagination Component', () => {
   it('should disable "first" and "previous" buttons on the first page', () => {
     const currentPage = 1;
 
-    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} onPageChange={vi.fn()} />);
+    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} />);
 
     const firstPageButton = screen.getByRole('button', { name: '<<' });
     const previousPageButton = screen.getByRole('button', { name: '<' });
-    const nextPageButton = screen.getByRole('button', { name: '>' });
+    const nextPageLink = screen.getByRole('link', { name: '>' });
+    const lastPageLink = screen.getByRole('link', { name: '>>' });
 
     expect(firstPageButton).toBeDisabled();
     expect(previousPageButton).toBeDisabled();
-    expect(nextPageButton).not.toBeDisabled();
+    expect(nextPageLink).toHaveAttribute('href', '?page=2');
+    expect(lastPageLink).toHaveAttribute('href', '?page=10');
   });
 
   it('should disable "next" and "last" buttons on the last page', () => {
     const currentPage = defaultTotalPages;
 
-    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} onPageChange={vi.fn()} />);
+    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} />);
 
     const nextPageButton = screen.getByRole('button', { name: '>' });
     const lastPageButton = screen.getByRole('button', { name: '>>' });
+    const firstPageLink = screen.getByRole('link', { name: '<<' });
+    const previousPageLink = screen.getByRole('link', { name: '<' });
 
     expect(nextPageButton).toBeDisabled();
     expect(lastPageButton).toBeDisabled();
+    expect(firstPageLink).toHaveAttribute('href', '?page=1');
+    expect(previousPageLink).toHaveAttribute('href', '?page=9');
   });
 
-  it('should call onPageChange with correct values when buttons are clicked', async () => {
-    const user = userEvent.setup();
-    const mockOnPageChange = vi.fn();
+  it('should render links with correct href for intermediate pages', () => {
     const currentPage = 5;
 
-    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} onPageChange={mockOnPageChange} />);
+    render(<Pagination currentPage={currentPage} totalPage={defaultTotalPages} />);
 
-    const firstPageButton = screen.getByRole('button', { name: '<<' });
-    const previousPageButton = screen.getByRole('button', { name: '<' });
-    const nextPageButton = screen.getByRole('button', { name: '>' });
-    const lastPageButton = screen.getByRole('button', { name: '>>' });
+    const firstPageLink = screen.getByRole('link', { name: '<<' });
+    const previousPageLink = screen.getByRole('link', { name: '<' });
+    const nextPageLink = screen.getByRole('link', { name: '>' });
+    const lastPageLink = screen.getByRole('link', { name: '>>' });
 
-    await user.click(nextPageButton);
-    expect(mockOnPageChange).toHaveBeenLastCalledWith(currentPage + 1);
-
-    await user.click(previousPageButton);
-    expect(mockOnPageChange).toHaveBeenLastCalledWith(currentPage - 1);
-
-    await user.click(firstPageButton);
-    expect(mockOnPageChange).toHaveBeenLastCalledWith(1);
-
-    await user.click(lastPageButton);
-    expect(mockOnPageChange).toHaveBeenLastCalledWith(defaultTotalPages);
-
-    expect(mockOnPageChange).toHaveBeenCalledTimes(4);
+    expect(firstPageLink).toHaveAttribute('href', '?page=1');
+    expect(previousPageLink).toHaveAttribute('href', '?page=4');
+    expect(nextPageLink).toHaveAttribute('href', '?page=6');
+    expect(lastPageLink).toHaveAttribute('href', '?page=10');
   });
 });

@@ -1,0 +1,42 @@
+{
+  "MainPage": {
+    "title": "Omni Search Dashboard",
+    "subtitle": "DIGITAL LIBRARY & GAME INSIGHTS",
+    "aboutLink": "About Project →"
+  },
+  "AboutPage": {
+    "title": "About Omni Search Dashboard",
+    "subtitle": "PROJECT DOCUMENTATION & VISION",
+    "backLink": "← BACK TO LIBRARY",
+    "section1Label": "The Application",
+    "section1Title": "A Single Page Experience for Gaming Enthusiasts",
+    "section1Text": "Omni Search Dashboard is a sophisticated SPA meticulously crafted for searching and exploring video games. By leveraging the powerful RAWG API, it provides real-time access to a vast database of titles, genres, and publishers within a high-performance, ethereal interface.",
+    "section2Label": "The Architecture",
+    "section2Title": "Feature-Sliced Design",
+    "section2Text": "The codebase is organized following the Feature-Sliced Design (FSD) methodology. This architectural pattern ensures scalability and maintainability by decomposing the application into distinct, loosely coupled layers, slices, and segments.",
+    "section3Label": "The Creator",
+    "githubLink": "GitHub Profile →",
+    "builtWith": "Built as part of the ",
+    "courseLink": "RS School React Course"
+  },
+  "GamesDiscovery": {
+    "noGamesForQuery": "No games found for \"{searchQuery}\".",
+    "noGamesAvailable": "No games available.",
+    "placeholder": "Search for awesome games...",
+    "library": "Library",
+    "viewingEntities": "Viewing {count} entities"
+  },
+  "CardDetail": {
+    "actionLabel": "Official Website"
+  },
+  "SelectedFlyout": {
+    "itemSelected": "{count, plural, =1 {Item selected} other {Items selected}}",
+    "clear": "Clear",
+    "download": "Download"
+  },
+  "NotFoundPage": {
+    "pageNotFound": "Page Not Found",
+    "description": "The path you sought has dissolved into the ether. Return to the collective or search for a new destination.",
+    "returnHome": "Return to Home"
+  }
+}

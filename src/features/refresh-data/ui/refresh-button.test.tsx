@@ -2,11 +2,16 @@ import { renderWithProviders } from '@/shared/lib/test-utils/render-with-provide
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { JSX } from 'react';
+import type { Mock } from 'vitest';
 import { describe, expect, it, vi } from 'vitest';
 import { RefreshButton } from './refresh-button';
 
 vi.mock('@shared/assets/svg/refresh-icon.svg?react', () => ({
   default: (): JSX.Element => <svg data-testid="refresh-icon" />,
+}));
+
+vi.mock('next/navigation', () => ({
+  useRouter: (): { refresh: Mock } => ({ refresh: vi.fn() }),
 }));
 
 describe('RefreshButton', () => {

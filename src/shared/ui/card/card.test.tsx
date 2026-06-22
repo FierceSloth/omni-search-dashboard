@@ -1,7 +1,16 @@
 import { FALLBACK_IMAGE } from '@/shared/constants/constants';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Card } from './card';
+
+vi.mock('next/image', () => ({
+  default: (props: { fill?: boolean } & React.ImgHTMLAttributes<HTMLImageElement>): JSX.Element => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { fill, ...rest } = props;
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img {...rest} />;
+  },
+}));
 
 describe('Card Component', () => {
   it('should render children content correctly', () => {

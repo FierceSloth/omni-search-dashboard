@@ -1,8 +1,12 @@
+'use client';
+
 import classNames from 'classnames';
-import { type ReactNode, type SyntheticEvent } from 'react';
+import { useState, type ReactNode } from 'react';
+
+import { FALLBACK_IMAGE } from '@/shared/constants/constants';
+import Image from 'next/image';
 
 import styles from './card.module.scss';
-import { FALLBACK_IMAGE } from '@/shared/constants/constants';
 
 interface IProps {
   className?: string;
@@ -10,17 +14,20 @@ interface IProps {
   children: ReactNode;
 }
 
-const handleImageError = (event: SyntheticEvent<HTMLImageElement>): void => {
-  if (event.currentTarget.src !== FALLBACK_IMAGE) {
-    event.currentTarget.src = FALLBACK_IMAGE;
-  }
-};
-
 export function Card({ className, imageUrl, children }: IProps): ReactNode {
+  const [imgSource, setImgSource] = useState(imageUrl || FALLBACK_IMAGE);
+
   return (
     <div className={classNames(styles.gameCard, className)}>
       <div className={styles.imageWrapper}>
-        <img className={styles.image} src={imageUrl || FALLBACK_IMAGE} onError={handleImageError} />
+        <Image
+          src={imgSource}
+          alt="Game cover"
+          fill
+          sizes="(max-width: 768px) 100vw, 400px"
+          className={styles.image}
+          onError={() => setImgSource(FALLBACK_IMAGE)}
+        />
       </div>
 
       <div className={styles.content}>{children}</div>

@@ -25,3 +25,9 @@ dist-ssr
 
 coverage
 .env
+
+.next
+next-env.d.ts
+# Next.js
+.next
+next-env.d.ts

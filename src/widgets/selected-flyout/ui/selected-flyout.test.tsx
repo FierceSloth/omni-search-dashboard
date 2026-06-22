@@ -2,6 +2,8 @@ import type { IGameCardEntity } from '@/entities/game';
 import { downloadCsv } from '@/shared/utils/download-csv.util';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { NextIntlClientProvider } from 'next-intl';
+import messages from '../../../../messages/en.json';
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { SelectedFlyout } from './selected-flyout';
 
@@ -52,7 +54,11 @@ describe('SelectedFlyout', () => {
   });
 
   it('should render nothing when no items are selected', () => {
-    const { container } = render(<SelectedFlyout />);
+    const { container } = render(
+      <NextIntlClientProvider messages={messages} locale="en">
+        <SelectedFlyout />
+      </NextIntlClientProvider>
+    );
     expect(container.firstChild).toBeNull();
   });
 
@@ -60,7 +66,11 @@ describe('SelectedFlyout', () => {
     mockCards = [mockCard];
     mockCount = 1;
 
-    render(<SelectedFlyout />);
+    render(
+      <NextIntlClientProvider messages={messages} locale="en">
+        <SelectedFlyout />
+      </NextIntlClientProvider>
+    );
 
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('Item selected')).toBeInTheDocument();
@@ -70,7 +80,11 @@ describe('SelectedFlyout', () => {
     mockCards = [mockCard, { ...mockCard, id: 9999 }];
     mockCount = 2;
 
-    render(<SelectedFlyout />);
+    render(
+      <NextIntlClientProvider messages={messages} locale="en">
+        <SelectedFlyout />
+      </NextIntlClientProvider>
+    );
 
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('Items selected')).toBeInTheDocument();
@@ -81,7 +95,11 @@ describe('SelectedFlyout', () => {
     mockCards = [mockCard];
     mockCount = 1;
 
-    render(<SelectedFlyout />);
+    render(
+      <NextIntlClientProvider messages={messages} locale="en">
+        <SelectedFlyout />
+      </NextIntlClientProvider>
+    );
 
     const clearButton = screen.getByRole('button', { name: /clear selection/i });
     await user.click(clearButton);
@@ -94,12 +112,16 @@ describe('SelectedFlyout', () => {
     mockCards = [mockCard];
     mockCount = 1;
 
-    render(<SelectedFlyout />);
+    render(
+      <NextIntlClientProvider messages={messages} locale="en">
+        <SelectedFlyout />
+      </NextIntlClientProvider>
+    );
 
     const downloadButton = screen.getByRole('button', { name: /download selection/i });
     await user.click(downloadButton);
 
-    const expectedUrl = `${globalThis.location.origin}/details/${mockCard.id}`;
+    const expectedUrl = `${globalThis.location.origin}/?details=${mockCard.id}`;
     const expectedHeaders = 'ID,Title,Description,Badge,Info,URL';
     const expectedRow = `${mockCard.id},"${mockCard.title}","${mockCard.description}","${mockCard.badge}","${mockCard.info}","${expectedUrl}"`;
     const expectedCsvContent = `${expectedHeaders}\n${expectedRow}`;
