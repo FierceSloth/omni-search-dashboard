@@ -4,16 +4,12 @@ import { type ReactElement, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
 import { selectedCardsReducer } from '@/app/store';
-import { gameApi } from '@/entities/game';
 
 export const setupStore = (): Store => {
   return configureStore({
     reducer: {
       selectedCards: selectedCardsReducer,
-      [gameApi.reducerPath]: gameApi.reducer,
     },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ immutableCheck: false, serializableCheck: false }).concat(gameApi.middleware),
   });
 };
 
