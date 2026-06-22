@@ -10,8 +10,8 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '@/app/store';
-import { buildDetailsPath } from '@/shared/constants/routes';
-import { downloadCsv, escapeCsv } from '@/shared/utils/download-csv.util';
+import { downloadCsv } from '@/shared/utils/download-csv.util';
+import { generateCsvAction } from '@/widgets/selected-flyout/actions';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/shared/ui/button';
@@ -21,8 +21,6 @@ import styles from './selected-flyout.module.scss';
 interface IProps {
   className?: string;
 }
-
-const HEADERS = ['ID', 'Title', 'Description', 'Badge', 'Info', 'URL'];
 
 export function SelectedFlyout({ className }: IProps): ReactNode {
   const t = useTranslations('SelectedFlyout');
@@ -37,23 +35,10 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
     dispatch(clearAllSelected());
   };
 
-  const handleDownloadClick = (): void => {
-    const rows = selectedCards.map((card) => {
-      const detailsUrl = `${globalThis.location.origin}${buildDetailsPath(card.id)}`;
+  const handleDownloadClick = async (): Promise<void> => {
+    const csvContent = await generateCsvAction(selectedCards, globalThis.location.origin);
 
-      return [
-        card.id,
-        escapeCsv(card.title),
-        escapeCsv(card.description),
-        escapeCsv(card.badge),
-        escapeCsv(card.info),
-        escapeCsv(detailsUrl),
-      ].join(',');
-    });
-
-    const csvContent = [HEADERS.join(','), ...rows].join('\n');
     const fileName = `${selectedCount}_items.csv`;
-
     downloadCsv(fileName, csvContent);
   };
 
@@ -70,7 +55,12 @@ export function SelectedFlyout({ className }: IProps): ReactNode {
             {t('clear')}
           </Button>
 
-          <Button variant="primary" type="button" onClick={handleDownloadClick} aria-label="Download selection">
+          <Button
+            variant="primary"
+            type="button"
+            onClick={() => void handleDownloadClick()}
+            aria-label="Download selection"
+          >
             {t('download')}
           </Button>
         </div>
