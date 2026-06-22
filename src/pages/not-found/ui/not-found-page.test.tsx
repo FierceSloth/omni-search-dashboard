@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProviders as render } from '@/shared/lib/test-utils/render-with-providers';
 
 import { describe, expect, it } from 'vitest';
 
-import { ROUTE_PATHS } from '@/shared/constants/routes';
 import { NotFoundPage } from './not-found-page';
 
 describe('NotFoundPage', () => {
@@ -24,6 +24,6 @@ describe('NotFoundPage', () => {
     const homeLink = screen.getByRole('link', { name: returnButtonRegex });
 
     expect(homeLink).toBeInTheDocument();
-    expect(homeLink).toHaveAttribute('href', ROUTE_PATHS.HOME);
+    expect(homeLink).toHaveAttribute('href', '/en');
   });
 });

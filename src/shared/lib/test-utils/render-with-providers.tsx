@@ -24,12 +24,21 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 
 type returnType = { store: ReturnType<typeof setupStore> } & RenderResult;
 
+import { NextIntlClientProvider } from 'next-intl';
+import messages from '../../../../messages/en.json';
+
 export function renderWithProviders(
   ui: ReactElement,
   { store = setupStore(), ...renderOptions }: ExtendedRenderOptions = {}
 ): returnType {
   function Wrapper({ children }: { children: ReactNode }): ReactElement {
-    return <Provider store={store}>{children}</Provider>;
+    return (
+      <Provider store={store}>
+        <NextIntlClientProvider messages={messages} locale="en">
+          {children}
+        </NextIntlClientProvider>
+      </Provider>
+    );
   }
   return {
     store,

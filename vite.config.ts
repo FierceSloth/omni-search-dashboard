@@ -30,6 +30,7 @@ export default defineConfig({
       '@features': path.resolve(__dirname, './src/features'),
       '@widgets': path.resolve(__dirname, './src/widgets'),
       '@pages': path.resolve(__dirname, './src/pages'),
+      'next/navigation': path.resolve(__dirname, './src/__mocks__/next-navigation.ts'),
     },
   },
 
@@ -37,6 +38,11 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/setup-tests.ts'],
+    server: {
+      deps: {
+        inline: ['next-intl'],
+      },
+    },
     coverage: {
       reporter: ['text', 'html', 'text-summary'],
       provider: 'v8',
