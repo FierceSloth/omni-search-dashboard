@@ -1,21 +1,24 @@
-import { Component, type ReactNode } from 'react';
-
+import { ROUTE_PATHS } from '@/shared/constants/routes';
+import { Header } from '@/shared/ui/header';
 import { GamesDiscoveryWidget } from '@widgets/games-discovery';
+import { type ReactNode } from 'react';
 
 import styles from './main-page.module.scss';
 
-export class MainPage extends Component {
-  public render(): ReactNode {
-    return (
-      <div className={styles.page}>
-        <header className={styles.header}>
-          <h1 className={styles.title}>Discovery</h1>
-        </header>
+export function MainPage(): ReactNode {
+  return (
+    <div className={styles.page}>
+      <Header
+        className={styles.headerWrapper}
+        title="Omni Search Dashboard"
+        subtitle="DIGITAL LIBRARY & GAME INSIGHTS"
+        linkTo={ROUTE_PATHS.ABOUT}
+        linkText="About Project →"
+      />
 
-        <main className={styles.main}>
-          <GamesDiscoveryWidget />
-        </main>
-      </div>
-    );
-  }
+      <main className={styles.main}>
+        <GamesDiscoveryWidget />
+      </main>
+    </div>
+  );
 }

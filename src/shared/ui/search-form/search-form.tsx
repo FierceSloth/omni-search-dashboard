@@ -1,32 +1,48 @@
 import classNames from 'classnames';
-import { Component, type InputHTMLAttributes, type ReactNode, type SubmitEventHandler } from 'react';
+import { type InputHTMLAttributes, type ReactNode, useState } from 'react';
 
 import searchIcon from '@shared/assets/svg/search-icon.svg?raw';
 import styles from './search-form.module.scss';
 
-interface IProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onSubmit'> {
+interface IProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onSubmit' | 'onChange' | 'value'> {
   className?: string;
   withIcon?: boolean;
   icon?: string;
-  onSubmit?: SubmitEventHandler<HTMLFormElement>;
+  defaultValue?: string;
+  onSearch: (query: string) => void;
 }
 
-export class SearchForm extends Component<IProps> {
-  public render(): ReactNode {
-    const { className, withIcon = true, icon = searchIcon, onSubmit, ...rest } = this.props;
+export function SearchForm({
+  className,
+  withIcon = true,
+  icon = searchIcon,
+  defaultValue = '',
+  onSearch,
+  ...rest
+}: IProps): ReactNode {
+  const [localValue, setLocalValue] = useState(defaultValue);
 
-    return (
-      <form className={classNames(styles.form, className)} onSubmit={onSubmit}>
-        {withIcon && (
-          <button
-            type="submit"
-            className={styles.button}
-            dangerouslySetInnerHTML={{ __html: icon }}
-            aria-label="Submit search"
-          />
-        )}
-        <input className={styles.input} {...rest} />
-      </form>
-    );
-  }
+  const handleInternalSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    onSearch(localValue.trim());
+  };
+
+  return (
+    <form className={classNames(styles.form, className)} onSubmit={handleInternalSubmit}>
+      {withIcon && (
+        <button
+          type="submit"
+          className={styles.button}
+          dangerouslySetInnerHTML={{ __html: icon }}
+          aria-label="Submit search"
+        />
+      )}
+      <input
+        className={styles.input}
+        onChange={(event) => setLocalValue(event.target.value)}
+        value={localValue}
+        {...rest}
+      />
+    </form>
+  );
 }

@@ -1,16 +1,14 @@
-import { MainPage } from '@/pages/main';
-import { Component, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 
-export class App extends Component {
-  public render(): ReactNode {
-    return (
-      <>
-        <div className="ambient-light" data-testid="background" />
+export function App(): ReactNode {
+  return (
+    <>
+      <div className="ambient-light" data-testid="background" />
 
-        <div className="container">
-          <MainPage />
-        </div>
-      </>
-    );
-  }
+      <div className="container">
+        <Outlet />
+      </div>
+    </>
+  );
 }

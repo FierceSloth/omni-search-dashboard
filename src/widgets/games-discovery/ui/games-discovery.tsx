@@ -1,119 +1,111 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { Button } from '@/shared/ui/button';
-import { Card } from '@/shared/ui/card';
-import { ErrorTrigger } from '@/shared/ui/error-trigger';
+import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
+import { CardPreview } from '@/shared/ui/card-preview';
+import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
 
+import { gameMapper } from '@/entities/game';
+import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
+import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
-import { gameMapper } from '@/entities/game/lib/game-mapper';
-import { ErrorMessage } from '@/shared/ui/error-message';
-import React, { Component, type ReactNode } from 'react';
 import styles from './games-discovery.module.scss';
 
-interface IState {
-  searchQuery: string;
-  games: IGameCardEntity[];
-  isLoading: boolean;
-  error: string | null;
-  hasFatalError: boolean;
-}
+export function GamesDiscoveryWidget(): ReactNode {
+  const [games, setGames] = useState<IGameCardEntity[]>([]);
 
-export class GamesDiscoveryWidget extends Component<Record<string, never>, IState> {
-  public state: IState = {
-    searchQuery: localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '',
-    games: [],
-    isLoading: false,
-    error: null,
-    hasFatalError: false,
-  };
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  public componentDidMount(): void {
-    void this.fetchGames();
-  }
+  const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
 
-  private fetchGames = async (): Promise<void> => {
-    const query = this.state.searchQuery.trim();
+  const [searchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
-    this.setState({
-      isLoading: true,
-      error: null,
-    });
+  useEffect(() => {
+    const fetchGames = async (): Promise<void> => {
+      const currentQuery = savedQuery.trim();
 
-    try {
-      const games = await GameService.searchGames(query);
-      const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
-      this.setState({ games: mappedGames });
+      setIsLoading(true);
+      setError(null);
 
-      localStorage.setItem(STORAGE_KEYS.SEARCH_QUERY, query);
-    } catch (error) {
-      this.setState({ error: error instanceof Error ? error.message : 'Something went wrong', games: [] });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
+      try {
+        const { games, totalPages } = await GameService.searchGames(currentQuery, currentPage);
+        const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
 
-  private handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ searchQuery: event.target.value });
-  };
+        setGames(mappedGames);
+        setTotalPages(totalPages);
+      } catch (error_) {
+        setError(error_ instanceof Error ? error_.message : 'Something went wrong');
+        setGames([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  private handleSearchSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
-    event.preventDefault();
+    void fetchGames();
+  }, [savedQuery, currentPage]);
 
-    const query = this.state.searchQuery.trim();
-    if (localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) === query) {
+  const handleSearchSubmit = (query: string): void => {
+    if (savedQuery === query) {
       return;
     }
 
-    void this.fetchGames();
+    setSavedQuery(query);
+    void navigate(`${ROUTE_PATHS.HOME}?page=1`);
   };
 
-  private triggerError = (): void => {
-    this.setState({ hasFatalError: true });
+  const handlePageChange = (page: number): void => {
+    void navigate(`${ROUTE_PATHS.HOME}?page=${page}`);
   };
 
-  public render(): ReactNode {
-    const { searchQuery, games, isLoading, error, hasFatalError } = this.state;
-
-    return (
-      <div className={styles.container}>
-        <Button className={styles.errorButton} type="button" onClick={this.triggerError}>
-          Throw Test Error
-        </Button>
-        <div className={styles.formWrapper}>
-          <SearchForm
-            className={styles.form}
-            onSubmit={this.handleSearchSubmit}
-            onChange={this.handleSearchChange}
-            placeholder="Search for awesome games..."
-            value={searchQuery}
-          />
-        </div>
-
-        <div className={styles.sectionHeader}>
-          <div className={styles.sectionTitle}>Library</div>
-          <div className={styles.resultsCount}>Viewing {games.length} entities</div>
-        </div>
-
-        <ErrorTrigger shouldThrow={hasFatalError} />
-
-        {error && <ErrorMessage title="Connection Lost" description={error} />}
-
-        {isLoading ? (
-          <div className={styles.loader} data-testid="loader">
-            Loading games...
-          </div>
-        ) : (
-          <ul className={styles.gameList}>
-            {games.map((game) => (
-              <li key={game.id}>
-                <Card {...game} />
-              </li>
-            ))}
-          </ul>
-        )}
+  return (
+    <div className={styles.container}>
+      <div className={styles.formWrapper}>
+        <SearchForm
+          className={styles.form}
+          onSearch={handleSearchSubmit}
+          defaultValue={savedQuery}
+          placeholder="Search for awesome games..."
+        />
       </div>
-    );
-  }
+      <div className={styles.sectionHeader}>
+        <p className={styles.sectionTitle}>Library</p>
+        <p className={styles.resultsCount}>Viewing {games.length} entities</p>
+      </div>
+      <AsyncStateRenderer
+        isLoading={isLoading}
+        error={error}
+        loadingText="Loading games..."
+        isEmpty={games.length === 0}
+        emptyNode={<div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>}
+      >
+        <>
+          <div className={styles.splitLayout}>
+            <div className={styles.listColumn}>
+              <ul className={styles.gameList}>
+                {games.map((game) => (
+                  <li key={game.id}>
+                    <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                      <CardPreview {...game} />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={styles.detailsColumn}>
+              <Outlet />
+            </div>
+          </div>
+          <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+        </>
+      </AsyncStateRenderer>
+    </div>
+  );
 }

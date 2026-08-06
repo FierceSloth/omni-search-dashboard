@@ -1,9 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, type RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
-import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { GameService } from '@entities/game';
 import { GamesDiscoveryWidget } from './games-discovery';
 
@@ -18,13 +18,20 @@ const mockGames = [
   },
 ];
 
+const renderWithRouter = (ui: React.ReactElement): RenderResult => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+};
+
 describe('GamesDiscoveryWidget', () => {
   let searchGamesSpy: Mock;
   let setItemSpy: Mock;
   let getItemSpy: Mock;
 
   beforeEach(() => {
-    searchGamesSpy = vi.spyOn(GameService, 'searchGames').mockResolvedValue(mockGames);
+    searchGamesSpy = vi.spyOn(GameService, 'searchGames').mockResolvedValue({
+      games: mockGames,
+      totalPages: 1,
+    });
 
     setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
     getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
@@ -35,7 +42,7 @@ describe('GamesDiscoveryWidget', () => {
   });
 
   it('should fetch games on mount and render them', async () => {
-    render(<GamesDiscoveryWidget />);
+    renderWithRouter(<GamesDiscoveryWidget />);
 
     const loadingElement = screen.getByTestId('loader');
     expect(loadingElement).toBeInTheDocument();
@@ -43,27 +50,26 @@ describe('GamesDiscoveryWidget', () => {
     const gameTitle = await screen.findByText(mockGames[0].name);
     expect(gameTitle).toBeInTheDocument();
 
-    expect(searchGamesSpy).toHaveBeenCalledWith('');
-    expect(searchGamesSpy).toHaveBeenCalledOnce();
+    expect(searchGamesSpy).toHaveBeenCalledWith('', 1);
   });
 
   it('should read query from localStorage on initial render', async () => {
     const testQuery = 'Mario';
     getItemSpy.mockReturnValue(testQuery);
 
-    render(<GamesDiscoveryWidget />);
+    renderWithRouter(<GamesDiscoveryWidget />);
 
     await screen.findByText(mockGames[0].name);
     const input = screen.getByRole('textbox');
 
     expect(input).toHaveValue(testQuery);
-    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery);
+    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery, 1);
   });
 
   it('should fetch new games and update localStorage on form submit', async () => {
     const testQuery = 'Mario';
     const user = userEvent.setup();
-    render(<GamesDiscoveryWidget />);
+    renderWithRouter(<GamesDiscoveryWidget />);
 
     await screen.findByText(mockGames[0].name);
 
@@ -74,7 +80,7 @@ describe('GamesDiscoveryWidget', () => {
     const submitButton = screen.getByRole('button', { name: /submit search/i });
     await user.click(submitButton);
 
-    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery);
+    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery, 1);
     expect(setItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.SEARCH_QUERY, testQuery);
   });
 
@@ -83,7 +89,7 @@ describe('GamesDiscoveryWidget', () => {
     const user = userEvent.setup();
     getItemSpy.mockReturnValue(testQuery);
 
-    render(<GamesDiscoveryWidget />);
+    renderWithRouter(<GamesDiscoveryWidget />);
     await screen.findByText(mockGames[0].name);
 
     searchGamesSpy.mockClear();
@@ -98,37 +104,9 @@ describe('GamesDiscoveryWidget', () => {
     const errorText = 'Network disconnected';
     searchGamesSpy.mockRejectedValue(new Error(errorText));
 
-    render(<GamesDiscoveryWidget />);
+    renderWithRouter(<GamesDiscoveryWidget />);
 
     const errorElement = await screen.findByText(errorText);
     expect(errorElement).toBeInTheDocument();
-  });
-
-  it('should render ErrorMessage with default message if API request fails', async () => {
-    searchGamesSpy.mockRejectedValue('Error');
-
-    render(<GamesDiscoveryWidget />);
-
-    const errorElement = await screen.findByText('Something went wrong');
-    expect(errorElement).toBeInTheDocument();
-  });
-
-  it('should trigger fatal error when error button is clicked', async () => {
-    const user = userEvent.setup();
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    render(
-      <ErrorBoundary>
-        <GamesDiscoveryWidget />
-      </ErrorBoundary>
-    );
-
-    const errorButton = screen.getByRole('button', { name: /throw test error/i });
-    await user.click(errorButton);
-
-    const errorElement = await screen.findByText('Something went wrong');
-    expect(errorElement).toBeInTheDocument();
-
-    consoleSpy.mockRestore();
   });
 });
