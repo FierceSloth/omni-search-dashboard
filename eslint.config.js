@@ -101,8 +101,20 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error'],
       'prettier/prettier': 'error',
       'unicorn/no-null': 'off',
+      'unicorn/prefer-spread': 'off',
       'unicorn/no-array-for-each': 'off',
       'unicorn/error-message': 'off',
+    },
+  },
+  {
+    files: ['**/msw/**/*.ts', '**/*.test.tsx', '**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   }
 );

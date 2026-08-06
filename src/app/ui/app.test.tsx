@@ -9,8 +9,12 @@ vi.mock('@/pages/main', () => ({
   MainPage: (): ReactNode => <div data-testid="mock-main-page" />,
 }));
 
-vi.mock('@/shared/ui/theme-button/theme-button', () => ({
-  ThemeButton: (): ReactNode => <div data-testid="mock-theme-button" />,
+vi.mock('@/features/theme-switcher', () => ({
+  ThemeSwitcher: (): ReactNode => <div data-testid="mock-theme-button" />,
+}));
+
+vi.mock('@/features/refresh-data', () => ({
+  RefreshButton: (): ReactNode => <div data-testid="mock-refresh-button" />,
 }));
 
 describe('App Component', () => {
@@ -44,6 +48,13 @@ describe('App Component', () => {
     renderAppWithRouter();
 
     const button = screen.getByTestId('mock-theme-button');
+    expect(button).toBeInTheDocument();
+  });
+
+  it('should render refresh button element', () => {
+    renderAppWithRouter();
+
+    const button = screen.getByTestId('mock-refresh-button');
     expect(button).toBeInTheDocument();
   });
 });

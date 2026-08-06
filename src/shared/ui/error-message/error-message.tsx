@@ -1,8 +1,10 @@
-import { Button } from '@/shared/ui/button';
-import retryIcon from '@shared/assets/svg/retry-icon.svg?raw';
-import warningIcon from '@shared/assets/svg/warning-icon.svg?raw';
 import classNames from 'classnames';
 import { type ReactNode } from 'react';
+
+import { Button } from '@/shared/ui/button';
+import RetryIcon from '@shared/assets/svg/retry-icon.svg?react';
+import WarningIcon from '@shared/assets/svg/warning-icon.svg?react';
+
 import styles from './error-message.module.scss';
 
 interface IProps {
@@ -19,12 +21,12 @@ const defaultOnRetry = (): void => {
 export function ErrorMessage({ title, description, className, onRetry }: IProps): ReactNode {
   return (
     <div className={classNames(styles.container, className)}>
-      <div className={styles.icon} dangerouslySetInnerHTML={{ __html: warningIcon }} />
+      <WarningIcon className={styles.icon} />
       <h2 className={styles.title}>{title}</h2>
       <p className={styles.description}>{description}</p>
 
       <Button onClick={onRetry ?? defaultOnRetry} className={styles.retryButton}>
-        <span className={styles.buttonIcon} dangerouslySetInnerHTML={{ __html: retryIcon }} />
+        <RetryIcon className={styles.buttonIcon} />
         Retry Connection
       </Button>
     </div>

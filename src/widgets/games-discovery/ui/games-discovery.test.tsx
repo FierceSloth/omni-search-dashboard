@@ -1,10 +1,13 @@
-import { STORAGE_KEYS } from '@/shared/constants/local-storage';
-import { GameService } from '@entities/game';
-import { render, screen, type RenderResult } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
 import type { ReactNode } from 'react';
-import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+
+import { server } from '@/shared/api/msw/server';
+import { STORAGE_KEYS } from '@/shared/constants/local-storage';
+import { renderWithProviders } from '@/shared/lib/test-utils/render-with-providers';
+
 import { GamesDiscoveryWidget } from './games-discovery';
 
 vi.mock('@/features/card-selection', () => ({
@@ -15,32 +18,11 @@ vi.mock('@/widgets/selected-flyout/ui/selected-flyout', () => ({
   SelectedFlyout: (): ReactNode => <div data-testid="mock-flyout" />,
 }));
 
-const mockGames = [
-  {
-    id: 3498,
-    name: 'Grand Theft Auto V',
-    background_image: 'https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg',
-    released: '2013-09-17',
-    rating: 4.47,
-    genres: [{ name: 'Action' }, { name: 'Adventure' }],
-  },
-];
-
-const renderWithRouter = (ui: React.ReactElement): RenderResult => {
-  return render(<MemoryRouter>{ui}</MemoryRouter>);
-};
-
 describe('GamesDiscoveryWidget', () => {
-  let searchGamesSpy: Mock;
   let setItemSpy: Mock;
   let getItemSpy: Mock;
 
   beforeEach(() => {
-    searchGamesSpy = vi.spyOn(GameService, 'searchGames').mockResolvedValue({
-      games: mockGames,
-      totalPages: 1,
-    });
-
     setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
     getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockReturnValue(null);
   });
@@ -50,36 +32,33 @@ describe('GamesDiscoveryWidget', () => {
   });
 
   it('should fetch games on mount and render them', async () => {
-    renderWithRouter(<GamesDiscoveryWidget />);
+    renderWithProviders(<GamesDiscoveryWidget />);
 
-    const loadingElement = screen.getByTestId('loader');
+    const loadingElement = screen.getByText('Loading games...');
     expect(loadingElement).toBeInTheDocument();
 
-    const gameTitle = await screen.findByText(mockGames[0].name);
+    const gameTitle = await screen.findByText('Grand Theft Auto V');
     expect(gameTitle).toBeInTheDocument();
-
-    expect(searchGamesSpy).toHaveBeenCalledWith('', 1);
   });
 
   it('should read query from localStorage on initial render', async () => {
     const testQuery = 'Mario';
     getItemSpy.mockReturnValue(testQuery);
 
-    renderWithRouter(<GamesDiscoveryWidget />);
+    renderWithProviders(<GamesDiscoveryWidget />);
 
-    await screen.findByText(mockGames[0].name);
+    await screen.findByText('Grand Theft Auto V');
     const input = screen.getByRole('textbox');
 
     expect(input).toHaveValue(testQuery);
-    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery, 1);
   });
 
   it('should fetch new games and update localStorage on form submit', async () => {
     const testQuery = 'Mario';
     const user = userEvent.setup();
-    renderWithRouter(<GamesDiscoveryWidget />);
 
-    await screen.findByText(mockGames[0].name);
+    renderWithProviders(<GamesDiscoveryWidget />);
+    await screen.findByText('Grand Theft Auto V');
 
     const input = screen.getByRole('textbox');
     await user.clear(input);
@@ -88,33 +67,55 @@ describe('GamesDiscoveryWidget', () => {
     const submitButton = screen.getByRole('button', { name: /submit search/i });
     await user.click(submitButton);
 
-    expect(searchGamesSpy).toHaveBeenCalledWith(testQuery, 1);
     expect(setItemSpy).toHaveBeenCalledWith(STORAGE_KEYS.SEARCH_QUERY, testQuery);
   });
 
-  it('should not fetch if search query is exactly the same as in localStorage', async () => {
-    const testQuery = 'Witcher';
+  it('should render ErrorMessage if API request fails', async () => {
+    server.use(
+      http.get('https://api.rawg.io/api/games', () => {
+        return HttpResponse.error();
+      })
+    );
+
+    renderWithProviders(<GamesDiscoveryWidget />);
+
+    const errorElement = await screen.findByText('Failed to fetch games');
+    expect(errorElement).toBeInTheDocument();
+  });
+
+  it('should render EmptyState if API returns no games without query', async () => {
+    server.use(
+      http.get('https://api.rawg.io/api/games', () => {
+        return HttpResponse.json({ count: 0, results: [] });
+      })
+    );
+
+    renderWithProviders(<GamesDiscoveryWidget />);
+
+    const emptyStateElement = await screen.findByText('No games available.');
+    expect(emptyStateElement).toBeInTheDocument();
+  });
+
+  it('should render EmptyState if API returns no games for query', async () => {
+    const brokenQuery = 'test broken query';
     const user = userEvent.setup();
-    getItemSpy.mockReturnValue(testQuery);
 
-    renderWithRouter(<GamesDiscoveryWidget />);
-    await screen.findByText(mockGames[0].name);
+    server.use(
+      http.get('https://api.rawg.io/api/games', () => {
+        return HttpResponse.json({ count: 0, results: [] });
+      })
+    );
 
-    searchGamesSpy.mockClear();
+    renderWithProviders(<GamesDiscoveryWidget />);
+
+    const input = screen.getByRole('textbox');
+    await user.clear(input);
+    await user.type(input, brokenQuery);
 
     const submitButton = screen.getByRole('button', { name: /submit search/i });
     await user.click(submitButton);
 
-    expect(searchGamesSpy).not.toHaveBeenCalled();
-  });
-
-  it('should render ErrorMessage if API request fails', async () => {
-    const errorText = 'Network disconnected';
-    searchGamesSpy.mockRejectedValue(new Error(errorText));
-
-    renderWithRouter(<GamesDiscoveryWidget />);
-
-    const errorElement = await screen.findByText(errorText);
-    expect(errorElement).toBeInTheDocument();
+    const emptyStateElement = await screen.findByText(`No games found for "${brokenQuery}".`);
+    expect(emptyStateElement).toBeInTheDocument();
   });
 });

@@ -1,57 +1,42 @@
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
+import { SelectedFlyout } from '@/widgets/selected-flyout';
 import { ToggleSelectionCheckbox } from '@features/card-selection';
 
-import { gameMapper } from '@/entities/game';
 import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
-import { GameService, type IGameCardEntity } from '@entities/game';
 
-import { SelectedFlyout } from '@/widgets/selected-flyout/ui/selected-flyout';
+import { useGetGamesQuery } from '@/entities/game';
+
 import styles from './games-discovery.module.scss';
 
+interface GamesEmptyStateProps {
+  searchQuery: string;
+}
+
+function GamesEmptyState({ searchQuery }: GamesEmptyStateProps): ReactNode {
+  return (
+    <div className={styles.emptyState}>
+      {searchQuery ? `No games found for "${searchQuery}".` : 'No games available.'}
+    </div>
+  );
+}
+
 export function GamesDiscoveryWidget(): ReactNode {
-  const [games, setGames] = useState<IGameCardEntity[]>([]);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [savedQuery, setSavedQuery] = useLocalStorage(STORAGE_KEYS.SEARCH_QUERY, '');
 
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchGames = async (): Promise<void> => {
-      const currentQuery = savedQuery.trim();
-
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const { games, totalPages } = await GameService.searchGames(currentQuery, currentPage);
-        const mappedGames = games.map((game) => gameMapper.mapGameCard(game));
-
-        setGames(mappedGames);
-        setTotalPages(totalPages);
-      } catch (error_) {
-        setError(error_ instanceof Error ? error_.message : 'Something went wrong');
-        setGames([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void fetchGames();
-  }, [savedQuery, currentPage]);
+  const { data, isFetching, isError } = useGetGamesQuery({ query: savedQuery.trim(), page: currentPage });
+  const { games = [], totalPages = 0 } = data || {};
 
   const handleSearchSubmit = (query: string): void => {
     if (savedQuery === query) {
@@ -76,43 +61,43 @@ export function GamesDiscoveryWidget(): ReactNode {
           placeholder="Search for awesome games..."
         />
       </div>
+
       <div className={styles.sectionHeader}>
         <p className={styles.sectionTitle}>Library</p>
         <p className={styles.resultsCount}>Viewing {games.length} entities</p>
       </div>
+
       <AsyncStateRenderer
-        isLoading={isLoading}
-        error={error}
+        isLoading={isFetching}
+        error={isError ? 'Failed to fetch games' : null}
         loadingText="Loading games..."
         isEmpty={games.length === 0}
-        emptyNode={<div className={styles.emptyState}>No games found for {`"${savedQuery}"`}.</div>}
+        emptyNode={<GamesEmptyState searchQuery={savedQuery} />}
       >
-        <>
-          <div className={styles.splitLayout}>
-            <div className={styles.listColumn}>
-              <ul className={styles.gameList}>
-                {games.map((game) => (
-                  <li key={game.id}>
-                    <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
-                      <CardPreview
-                        {...game}
-                        actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className={styles.detailsColumn}>
-              <Outlet />
-            </div>
+        <div className={styles.splitLayout}>
+          <div className={styles.listColumn}>
+            <ul className={styles.gameList}>
+              {games.map((game) => (
+                <li key={game.id}>
+                  <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
+                    <CardPreview
+                      {...game}
+                      actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+          <div className={styles.detailsColumn}>
+            <Outlet />
+          </div>
+        </div>
 
-          <SelectedFlyout />
-        </>
+        <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+
+        <SelectedFlyout />
       </AsyncStateRenderer>
     </div>
   );

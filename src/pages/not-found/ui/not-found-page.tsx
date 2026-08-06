@@ -3,7 +3,7 @@ import { Button } from '@/shared/ui/button';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import retryIcon from '@shared/assets/svg/retry-icon.svg?raw';
+import RetryIcon from '@shared/assets/svg/retry-icon.svg?react';
 import styles from './not-found-page.module.scss';
 
 export function NotFoundPage(): ReactNode {
@@ -16,7 +16,7 @@ export function NotFoundPage(): ReactNode {
       </p>
       <Link to={ROUTE_PATHS.HOME}>
         <Button type="button">
-          <span className={styles.buttonIcon} dangerouslySetInnerHTML={{ __html: retryIcon }} />
+          <RetryIcon className={styles.buttonIcon} />
           Return to Home
         </Button>
       </Link>

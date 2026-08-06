@@ -1,10 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 
-import { gameMapper, GameService } from '@/entities/game';
+import { server } from '@/shared/api/msw/server';
 import { ROUTE_PATHS } from '@/shared/constants/routes';
+import { renderWithProviders } from '@/shared/lib/test-utils/render-with-providers';
+
 import { GameDetailsWidget } from './games-details';
 
 const mockNavigate = vi.fn();
@@ -21,90 +23,51 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-const mockApiDetailsResponse = {
-  id: 3498,
-  name: 'Grand Theft Auto V',
-  description_raw: 'An open world game.',
-  background_image: 'https://example.com/gta.jpg',
-  rating: 4.47,
-  released: '2013-09-17',
-  genres: [{ name: 'Action' }],
-  developers: [{ name: 'Rockstar' }],
-  website: 'https://rockstargames.com',
-};
-
 describe('GameDetailsWidget', () => {
-  let getGameByIdSpy: Mock;
-
   beforeEach(() => {
     vi.clearAllMocks();
-
-    getGameByIdSpy = vi.spyOn(GameService, 'getGameById').mockResolvedValue(mockApiDetailsResponse);
   });
 
   it('should show loader with correct text during data fetching', async () => {
-    const loadingText = 'Loading game details...';
-
-    render(
-      <MemoryRouter>
-        <GameDetailsWidget />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(loadingText)).toBeInTheDocument();
+    renderWithProviders(<GameDetailsWidget />);
+    expect(screen.getByText('Loading game details...')).toBeInTheDocument();
 
     await screen.findByRole('heading', { level: 2 });
   });
 
-  it('should fetch details by id, map them, and render CardDetail', async () => {
-    const mappedData = gameMapper.mapGameDetails(mockApiDetailsResponse);
-    const expectedTitle = mappedData.title;
+  it('should fetch details by id and render CardDetail', async () => {
+    renderWithProviders(<GameDetailsWidget />);
 
-    render(
-      <MemoryRouter>
-        <GameDetailsWidget />
-      </MemoryRouter>
-    );
-
-    expect(getGameByIdSpy).toHaveBeenCalledWith(Number(mockParams.id));
-
-    const titleElement = await screen.findByRole('heading', { level: 2, name: expectedTitle });
+    const titleElement = await screen.findByRole('heading', {
+      level: 2,
+      name: 'Grand Theft Auto V',
+    });
     expect(titleElement).toBeInTheDocument();
   });
 
   it('should navigate back to home preserving search params when close button is clicked', async () => {
     const user = userEvent.setup();
-    const mappedData = gameMapper.mapGameDetails(mockApiDetailsResponse);
+    renderWithProviders(<GameDetailsWidget />);
 
-    render(
-      <MemoryRouter>
-        <GameDetailsWidget />
-      </MemoryRouter>
-    );
-
-    await screen.findByRole('heading', { level: 2, name: mappedData.title });
+    await screen.findByRole('heading', { level: 2, name: 'Grand Theft Auto V' });
 
     const closeButton = screen.getByRole('button', { name: /close details/i });
     await user.click(closeButton);
 
     const expectedRedirectPath = `${ROUTE_PATHS.HOME}?${mockSearchParams.toString()}`;
-
     expect(mockNavigate).toHaveBeenCalledWith(expectedRedirectPath);
   });
 
-  it('should render ErrorMessage if service request fails', async () => {
-    const apiErrorText = 'API rate limit exceeded';
-    getGameByIdSpy.mockRejectedValue(new Error(apiErrorText));
-
-    render(
-      <MemoryRouter>
-        <GameDetailsWidget />
-      </MemoryRouter>
+  it('should render ErrorMessage if network request fails', async () => {
+    server.use(
+      http.get('https://api.rawg.io/api/games/:id', () => {
+        return HttpResponse.error();
+      })
     );
 
-    const errorElement = await screen.findByText(apiErrorText);
-    expect(errorElement).toBeInTheDocument();
+    renderWithProviders(<GameDetailsWidget />);
 
-    expect(screen.getByText('Connection Lost')).toBeInTheDocument();
+    const errorElement = await screen.findByText('Failed to fetch game details');
+    expect(errorElement).toBeInTheDocument();
   });
 });
