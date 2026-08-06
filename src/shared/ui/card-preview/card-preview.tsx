@@ -11,11 +11,14 @@ interface IProps {
   description?: string;
   badge?: string;
   info?: string;
+  actionSlot?: ReactNode;
 }
 
-export function CardPreview({ className, imageUrl, title, description, badge, info }: IProps): ReactNode {
+export function CardPreview({ className, imageUrl, title, description, badge, info, actionSlot }: IProps): ReactNode {
   return (
     <Card className={classNames(className, styles.card)} imageUrl={imageUrl}>
+      {actionSlot}
+
       <div className={styles.meta}>
         {badge && (
           <div className={styles.badge} data-testid="badge-container">

@@ -1,0 +1,104 @@
+@use '@app/styles/abstract/mixins' as *;
+
+.flyoutWrapper {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  z-index: var(--z-sticky);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+.flyout {
+  pointer-events: auto;
+
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+
+  padding: 12px 12px 12px 24px;
+  width: fit-content;
+
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow: var(--glow-subtle);
+
+  animation: slideUpBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+
+  @include media-sm {
+    gap: 12px;
+    padding: 8px 8px 8px 16px;
+  }
+}
+
+@keyframes slideUpBounce {
+  from {
+    transform: translateY(150%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &::after {
+    content: '';
+    width: 1px;
+    height: 24px;
+    background: var(--border-subtle);
+    border-radius: 2px;
+    margin: 0 16px;
+  }
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  background: var(--text-primary);
+  color: var(--bg-color);
+  border-radius: 50%;
+  box-shadow: var(--glow-active);
+
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.text {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+
+  @include media-xs {
+    display: none;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

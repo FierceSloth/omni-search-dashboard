@@ -1,10 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { router } from '@/app/providers/router';
+import { store } from '@app/store';
+import { Provider } from 'react-redux';
+
+import { router } from '@app/providers/router';
 import { RouterProvider } from 'react-router-dom';
 
 import '@app/styles/style.scss';
+import { ThemeProvider } from '@shared/lib/context/theme';
 
 const rootElement = document.querySelector('#root');
 
@@ -13,7 +17,11 @@ if (rootElement) {
 
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <Provider store={store}>
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </Provider>
     </StrictMode>
   );
 } else {

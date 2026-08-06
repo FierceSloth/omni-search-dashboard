@@ -3,7 +3,6 @@
 
   &:hover {
     border-color: var(--border-highlight);
-    transform: translateY(-4px);
     box-shadow:
       0 12px 30px rgba(0, 0, 0, 0.5),
       var(--glow-subtle);
@@ -25,7 +24,7 @@
   border: 1px solid var(--border-subtle);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--surface-2);
 }
 
 .info {

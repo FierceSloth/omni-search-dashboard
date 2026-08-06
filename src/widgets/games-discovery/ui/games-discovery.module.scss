@@ -79,6 +79,12 @@
   gap: 24px;
 }
 
+.checkbox {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
 .emptyState {
   display: flex;
   flex-direction: column;

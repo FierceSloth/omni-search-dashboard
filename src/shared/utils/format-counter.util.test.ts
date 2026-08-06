@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatCounter } from './format-counter';
+import { formatCounter } from './format-counter.util';
 
 describe('formatCounter', () => {
   it('should format simple numbers correctly without thousands separator', () => {

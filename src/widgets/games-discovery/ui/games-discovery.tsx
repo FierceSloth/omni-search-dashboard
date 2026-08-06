@@ -6,12 +6,14 @@ import { AsyncStateRenderer } from '@/shared/ui/async-state-renderer';
 import { CardPreview } from '@/shared/ui/card-preview';
 import { Pagination } from '@/shared/ui/pagination';
 import { SearchForm } from '@/shared/ui/search-form';
+import { ToggleSelectionCheckbox } from '@features/card-selection';
 
 import { gameMapper } from '@/entities/game';
 import { buildDetailsPath, ROUTE_PATHS } from '@/shared/constants/routes';
 import { useLocalStorage } from '@/shared/lib/hooks/use-local-storage';
 import { GameService, type IGameCardEntity } from '@entities/game';
 
+import { SelectedFlyout } from '@/widgets/selected-flyout/ui/selected-flyout';
 import styles from './games-discovery.module.scss';
 
 export function GamesDiscoveryWidget(): ReactNode {
@@ -92,7 +94,10 @@ export function GamesDiscoveryWidget(): ReactNode {
                 {games.map((game) => (
                   <li key={game.id}>
                     <Link className={styles.link} to={`${buildDetailsPath(game.id)}?page=${currentPage}`}>
-                      <CardPreview {...game} />
+                      <CardPreview
+                        {...game}
+                        actionSlot={<ToggleSelectionCheckbox card={game} className={styles.checkbox} />}
+                      />
                     </Link>
                   </li>
                 ))}
@@ -103,7 +108,10 @@ export function GamesDiscoveryWidget(): ReactNode {
               <Outlet />
             </div>
           </div>
+
           <Pagination currentPage={currentPage} totalPage={totalPages} onPageChange={handlePageChange} />
+
+          <SelectedFlyout />
         </>
       </AsyncStateRenderer>
     </div>

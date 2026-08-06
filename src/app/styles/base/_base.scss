@@ -56,6 +56,9 @@ body {
   position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   &::after {
     content: '';
@@ -81,34 +84,6 @@ body {
 
   position: relative;
   z-index: var(--z-base);
-}
-
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  padding: 0 20px;
-
-  @include media-sm {
-    padding: 0 15px;
-  }
-}
-
-.ambient-light {
-  position: fixed;
-  top: -20vh;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 70vw;
-  height: 70vh;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
-  pointer-events: none;
-  z-index: var(--z-behind);
-  filter: blur(40px);
 }
 
 h1,

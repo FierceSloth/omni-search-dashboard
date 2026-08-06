@@ -1,3 +1,4 @@
+import { MainPage } from '@/pages/main';
 import { render, screen, type RenderResult } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -8,7 +9,9 @@ vi.mock('@/pages/main', () => ({
   MainPage: (): ReactNode => <div data-testid="mock-main-page" />,
 }));
 
-import { MainPage } from '@/pages/main';
+vi.mock('@/shared/ui/theme-button/theme-button', () => ({
+  ThemeButton: (): ReactNode => <div data-testid="mock-theme-button" />,
+}));
 
 describe('App Component', () => {
   const renderAppWithRouter = (): RenderResult => {
@@ -35,5 +38,12 @@ describe('App Component', () => {
 
     const background = screen.getByTestId('background');
     expect(background).toBeInTheDocument();
+  });
+
+  it('should render theme button element', () => {
+    renderAppWithRouter();
+
+    const button = screen.getByTestId('mock-theme-button');
+    expect(button).toBeInTheDocument();
   });
 });

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
-import { formatCounter } from '@/shared/utils/format-counter';
+import { formatCounter } from '@/shared/utils/format-counter.util';
 import { Pagination } from './pagination';
 
 describe('Pagination Component', () => {

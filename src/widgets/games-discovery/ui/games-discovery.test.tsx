@@ -1,11 +1,19 @@
-import { render, screen, type RenderResult } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
-import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-
 import { STORAGE_KEYS } from '@/shared/constants/local-storage';
 import { GameService } from '@entities/game';
+import { render, screen, type RenderResult } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import type { ReactNode } from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { GamesDiscoveryWidget } from './games-discovery';
+
+vi.mock('@/features/card-selection', () => ({
+  ToggleSelectionCheckbox: (): ReactNode => <input type="checkbox" data-testid="mock-checkbox" />,
+}));
+
+vi.mock('@/widgets/selected-flyout/ui/selected-flyout', () => ({
+  SelectedFlyout: (): ReactNode => <div data-testid="mock-flyout" />,
+}));
 
 const mockGames = [
   {
