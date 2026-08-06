@@ -9,6 +9,7 @@
 This project is not just a search interface — it is an architectural case study in **incremental migration**: from class components to hooks, from manual fetch to RTK Query, and from client-side SPA to server-rendered Next.js with React Server Components.
 
 > 📋 **RS School React Course:** [rs.school/courses/reactjs](https://rs.school/courses/reactjs)
+
 > 💡 **Note on Current Version:** The current default branch (`main`) and live deployment intentionally run the **`api-queries` (SPA)** version of the app for optimal client-side performance and smooth UX. The final `nextjs-ssr` migration is preserved as an open Pull Request for architectural review.
 
 -----
