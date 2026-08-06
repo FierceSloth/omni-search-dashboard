@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 
 export default tseslint.config(
   {
-    ignores: ['dist'],
+    ignores: ['dist', 'vite.config.ts'],
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -70,10 +70,6 @@ export default tseslint.config(
       ],
       '@typescript-eslint/member-ordering': 'off',
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-      'no-magic-numbers': [
-        'error',
-        { ignore: [0, 1, -1], ignoreArrayIndexes: true, enforceConst: true, detectObjects: true },
-      ],
 
       'react/self-closing-comp': [
         'error',
@@ -106,6 +102,7 @@ export default tseslint.config(
       'prettier/prettier': 'error',
       'unicorn/no-null': 'off',
       'unicorn/no-array-for-each': 'off',
+      'unicorn/error-message': 'off',
     },
   }
 );

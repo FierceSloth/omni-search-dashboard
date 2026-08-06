@@ -16,7 +16,7 @@ interface IProps {
 
 export class Card extends Component<IProps> {
   private handleImageError = (event: SyntheticEvent<HTMLImageElement>): void => {
-    if (event.currentTarget.src !== FALLBACK_IMAGE || !event.currentTarget.src) {
+    if (event.currentTarget.src !== FALLBACK_IMAGE) {
       event.currentTarget.src = FALLBACK_IMAGE;
     }
   };
@@ -32,12 +32,24 @@ export class Card extends Component<IProps> {
 
         <div className={styles.content}>
           <div className={styles.meta}>
-            {badge && <div className={styles.badge}>{badge}</div>}
-            {info && <div className={styles.info}>{info}</div>}
+            {badge && (
+              <div className={styles.badge} data-testid="badge-container">
+                {badge}
+              </div>
+            )}
+            {info && (
+              <div className={styles.info} data-testid="info-container">
+                {info}
+              </div>
+            )}
           </div>
           <div className={styles.title}>{title}</div>
 
-          {description && <p className={styles.description}>{description}</p>}
+          {description && (
+            <p className={styles.description} data-testid="description-container">
+              {description}
+            </p>
+          )}
         </div>
       </div>
     );

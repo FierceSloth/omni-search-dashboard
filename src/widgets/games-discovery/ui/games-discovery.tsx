@@ -101,7 +101,9 @@ export class GamesDiscoveryWidget extends Component<Record<string, never>, IStat
         {error && <ErrorMessage title="Connection Lost" description={error} />}
 
         {isLoading ? (
-          <div className={styles.loader}>Loading games...</div>
+          <div className={styles.loader} data-testid="loader">
+            Loading games...
+          </div>
         ) : (
           <ul className={styles.gameList}>
             {games.map((game) => (
