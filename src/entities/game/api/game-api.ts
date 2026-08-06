@@ -16,7 +16,7 @@ const DEFAULT_PAGE_SIZE = 20;
 export const gameApi = createApi({
   reducerPath: 'gameApi',
 
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://api.rawg.io/api' }),
+  baseQuery: fetchBaseQuery({ baseUrl: '/rawg-api' }),
 
   tagTypes: Object.values(GAME_API_TAGS),
   keepUnusedDataFor: CACHE_TTL,
